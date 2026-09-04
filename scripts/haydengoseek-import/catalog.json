@@ -1,0 +1,2925 @@
+{
+  "fetchedAt": "2026-09-04T11:56:46.379Z",
+  "source": "https://haydengoseek.com",
+  "categories": [
+    {
+      "id": 25,
+      "name": "Art",
+      "slug": "art",
+      "parent": null,
+      "count": 14
+    }
+  ],
+  "products": [
+    {
+      "id": 90260,
+      "name": "Leaves",
+      "slug": "leaves",
+      "sku": "LEAVES",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; Oak float frame.<br />\nLeaves is intricate with so many fine lines. Subtle greens and splashes of white with white leaves painted delicately on top. This beautiful piece works well as a feature amongst timber furniture.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "130000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90261,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90262,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90263,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90264,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90265,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90266,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90267,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90268,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90269,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90270,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90271,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90272,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90273,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90274,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90275,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90276,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90277,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/leaves-oak.jpg",
+          "alt": "Leaves",
+          "name": "leaves-oak"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/leaves-mockup4.jpg",
+          "alt": "Leaves",
+          "name": "leaves-mockup4"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/leaves-oak.jpg",
+          "alt": "Leaves",
+          "name": "leaves-oak"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/leaves-black.jpg",
+          "alt": "Leaves",
+          "name": "leaves-black"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/leaves-oak-print.png",
+          "alt": "Leaves",
+          "name": "leaves-oak-print"
+        }
+      ]
+    },
+    {
+      "id": 90230,
+      "name": "Escaping",
+      "slug": "escaping",
+      "sku": "ESCAPING",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on foamboard &#8211; unframed.<br />\nEscaping is fluent, it feels like bubbles swirling and rising to the surface. It is layered, colourful and it flows.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "180000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90240,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90241,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90242,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90243,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90244,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90245,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90246,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90247,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90248,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90249,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90250,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90251,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90252,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90253,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90254,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90255,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90256,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90257,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90258,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90259,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/escaping-paper.jpg",
+          "alt": "Escaping",
+          "name": "escaping-paper"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/escaping-mockup3.jpg",
+          "alt": "Escaping",
+          "name": "escaping-mockup3"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/escaping-oak.jpg",
+          "alt": "Escaping",
+          "name": "escaping-oak"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/escaping-oak-print.jpg",
+          "alt": "Escaping",
+          "name": "escaping-oak-print"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/escaping-OG.jpg",
+          "alt": "Escaping",
+          "name": "escaping-OG"
+        }
+      ]
+    },
+    {
+      "id": 90201,
+      "name": "Aztec jewellery",
+      "slug": "aztec-jewellery",
+      "sku": "AZTEC",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; White float frame.<br />\nMy Grandparents did a lot of travelling around the world and because I was the favourite grandchild my grandmother would always bring me presents. Jewellery, art and artefacts from South America and Mexico were my favourites. I kept it all and the shapes and mythology really inspired this artwork.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "190000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90222,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90223,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90224,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90225,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90226,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90227,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90228,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90229,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90231,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90232,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90233,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90234,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90235,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90236,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90237,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90238,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90239,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/aztec-white.jpg",
+          "alt": "Aztec jewellery",
+          "name": "aztec-white"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/aztec-modern-mockup.jpg",
+          "alt": "Aztec jewellery",
+          "name": "aztec-modern-mockup"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/aztec-blk.jpg",
+          "alt": "Aztec jewellery",
+          "name": "aztec-blk"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/aztec-blk-print.jpg",
+          "alt": "Aztec jewellery",
+          "name": "aztec-blk-print"
+        }
+      ]
+    },
+    {
+      "id": 90200,
+      "name": "My friends",
+      "slug": "my-friends",
+      "sku": "MYFRIENDS",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; Black float frame.<br />\nMy friends was never intended to be critters but I painted eyes on one of the shapes and one thing led to another. Then it became a family of interesting characters weaving into each while maintaining a peaceful harmony in greens, purples and blues.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "290000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90205,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90206,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90207,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90208,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90209,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90210,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90211,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90212,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90213,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90214,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90215,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90216,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90217,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90218,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90219,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90220,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90221,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/friends-black.jpg",
+          "alt": "My friends",
+          "name": "friends-black"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/friends-OG.jpg",
+          "alt": "My friends",
+          "name": "friends-OG"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/friends-black-print.jpg",
+          "alt": "My friends",
+          "name": "friends-black-print"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/Friends-mockup1.jpg",
+          "alt": "My friends",
+          "name": "Friends-mockup1"
+        }
+      ]
+    },
+    {
+      "id": 90170,
+      "name": "Montezuma",
+      "slug": "montezuma",
+      "sku": "MONTEZUMA",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; Oak float frame.</p>\n<hr>\n<p>My grandmother had a copper artwork on the wall in the lounge that I loved. I wonder where that went after she died? The shapes and the way it flows and creates harmony is what I love about this piece, and the yellow colour scheme with the small hints of blue. Just delightful.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "320000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90186,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90187,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90188,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90189,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90190,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90191,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90192,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90193,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90194,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90195,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90196,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90197,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90198,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90199,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90202,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90203,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90204,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/Montezuma-oak.jpg",
+          "alt": "Montezuma",
+          "name": "Montezuma-oak"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/Montezuma-mockup2.jpg",
+          "alt": "Montezuma",
+          "name": "Montezuma-mockup2"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/Montezuma-OG.jpg",
+          "alt": "Montezuma",
+          "name": "Montezuma-OG"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/Montezuma-Oak-Print.jpg",
+          "alt": "Montezuma",
+          "name": "Montezuma-Oak-Print"
+        }
+      ]
+    },
+    {
+      "id": 90141,
+      "name": "Life and death",
+      "slug": "life-and-death",
+      "sku": "LIFEDEATH",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; Black float frame.</p>\n<hr />\n<p>I painted this picture after I had Ayahuasca for the first time. Normally when I paint, I start somewhere and I finish somewhere but for this piece I had a plan and a story.</p>\n<p>On the bottom left the sun sets over the Gold Coast making the buildings orange and red. Bottom right is the cog of work life. Middle left is a womb with an unborn baby inside surrounded by family and friends. Top right is our ancestors, grandparents and those that have come and gone before us. The colours around him are his life and a newborn baby starts the circle of life again.</p>\n<p>Beautiful colourful awesomeness.</p>\n<p>(Frame note: black grain float frame)</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "200000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90168,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90169,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90171,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90172,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90173,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90174,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90175,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90176,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90177,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90178,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90179,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90180,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90181,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90182,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90183,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90184,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90185,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/Life-Death-black.jpg",
+          "alt": "Life and death",
+          "name": "Life-Death-black"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/Life-Death-mockup1.jpg",
+          "alt": "Life and death",
+          "name": "Life-Death-mockup1"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/Life-Death-OG.jpg",
+          "alt": "Life and death",
+          "name": "Life-Death-OG"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/Life-Death-oak-print.jpg",
+          "alt": "Life and death",
+          "name": "Life-Death-oak-print"
+        }
+      ]
+    },
+    {
+      "id": 90140,
+      "name": "Red Mountain",
+      "slug": "red-mountain",
+      "sku": "REDMOUNTAIN",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; unframed.</p>\n<hr />\n<p>White on red. Psychedelic. Sunlight spills over the majestic mountain as snow melts and gives life to the fresh water rivers and lakes which create a flow on effect for nature to flourish.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "109500"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90148,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90149,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90150,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90151,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90152,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90153,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90154,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90155,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90156,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90157,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90158,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90159,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90160,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90161,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90162,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90163,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90164,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90165,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90166,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90167,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/red-mountain-OG.jpg",
+          "alt": "Red Mountain",
+          "name": "red-mountain-OG"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/red-mountain-mockup2.jpg",
+          "alt": "Red Mountain",
+          "name": "red-mountain-mockup2"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/red-mountain-oak.jpg",
+          "alt": "Red Mountain",
+          "name": "red-mountain-oak"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/red-mountain-print-oak.jpg",
+          "alt": "Red Mountain",
+          "name": "red-mountain-print-oak"
+        }
+      ]
+    },
+    {
+      "id": 90111,
+      "name": "Purple Portal",
+      "slug": "purple-portal",
+      "sku": "PURPLEPORTAL",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; Black float frame.</p>\n<hr>\n<p>The Purple portal is alive with colour. It&#8217;s a real showstopper. Deep purples and vibrant red. This piece draws you into the void of epicness.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "185000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90129,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90130,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90131,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90132,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90133,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90134,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90135,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90136,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90137,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90138,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90139,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90142,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90143,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90144,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90145,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90146,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90147,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/purple-portal-black.jpg",
+          "alt": "Purple Portal",
+          "name": "purple-portal-black"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/purple-portal-mockup1.jpg",
+          "alt": "Purple Portal",
+          "name": "purple-portal-mockup1"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/purple-portal-OG.jpg",
+          "alt": "Purple Portal",
+          "name": "purple-portal-OG"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/purple-portal-oak.jpg",
+          "alt": "Purple Portal",
+          "name": "purple-portal-oak"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/purple-portal-oak-print.jpg",
+          "alt": "Purple Portal",
+          "name": "purple-portal-oak-print"
+        }
+      ]
+    },
+    {
+      "id": 90110,
+      "name": "Peeking through the blinds",
+      "slug": "peeking-through-the-blinds",
+      "sku": "PEEKING",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; Black float frame.</p>\n<hr />\n<p>&#8216;Peeking&#8217; started as an idea with textures and colours. I painted the gold lines and then decided I needed something on top so I painted a nude lady.. I was pleasantly surprised by her shape and beauty.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "190000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90112,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90113,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90114,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90115,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90116,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90117,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90118,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90119,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90120,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90121,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90122,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90123,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90124,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90125,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90126,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90127,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90128,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/peaking-black.jpg",
+          "alt": "Peeking through the blinds",
+          "name": "peaking-black"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/peaking-mockup2.jpg",
+          "alt": "Peeking through the blinds",
+          "name": "peaking-mockup2"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/peaking-OG.jpg",
+          "alt": "Peeking through the blinds",
+          "name": "peaking-OG"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/peaking-print-oak.jpg",
+          "alt": "Peeking through the blinds",
+          "name": "peaking-print-oak"
+        }
+      ]
+    },
+    {
+      "id": 90080,
+      "name": "Weavings",
+      "slug": "weavings",
+      "sku": "WEAVINGS",
+      "descriptionHtml": "<p><strong>Medium:</strong> Oil on canvas &#8211; Oak float frame.</p>\n<hr />\n<p>This beautiful intricate piece represents peace and rhythm amongst the chaos of being.<br />\nCreate your own story and feel the magic that is weaved into the shapes of this chaotic yet strangely calming artwork.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "320000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90093,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90094,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90095,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90096,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90097,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90098,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90099,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90100,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90101,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90102,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90103,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90104,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90105,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90106,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90107,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90108,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90109,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/weavings-oak.jpg",
+          "alt": "Weavings",
+          "name": "weavings-oak"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/weavings-mockup1.jpg",
+          "alt": "Weavings",
+          "name": "weavings-mockup1"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/weavings-OG.jpg",
+          "alt": "Weavings",
+          "name": "weavings-OG"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/weavings-oak-print.jpg",
+          "alt": "Weavings",
+          "name": "weavings-oak-print"
+        }
+      ]
+    },
+    {
+      "id": 90051,
+      "name": "There's a storm brewing",
+      "slug": "theres-a-storm-brewing",
+      "sku": "STORM",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; Black float frame.</p>\n<hr />\n<p>Tight shapes weave like a weather pattern clouding up my mind as I struggle to make sense of day to day life. This picture represents intensity and feeling tense and tight but eventually breaking free and flowing once again in this big wild world.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "195000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90075,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90076,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90077,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90078,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90079,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90081,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90082,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90083,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90084,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90085,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90086,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90087,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90088,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90089,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90090,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90091,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90092,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/storm-black.jpg",
+          "alt": "There&#8217;s a storm brewing",
+          "name": "storm-black"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/storm-OG.jpg",
+          "alt": "There&#8217;s a storm brewing",
+          "name": "storm-OG"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/storm-oak-print.jpg",
+          "alt": "There&#8217;s a storm brewing",
+          "name": "storm-oak-print"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/storm-black-print.jpg",
+          "alt": "There&#8217;s a storm brewing",
+          "name": "storm-black-print"
+        }
+      ]
+    },
+    {
+      "id": 90050,
+      "name": "Summer in the city",
+      "slug": "summer-in-the-city",
+      "sku": "SUMMER",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; Oak float frame.</p>\n<hr />\n<p>Bright colours. I remember feeling very joyous while painting this little beauty. It reminded me of the city, the streets, trees, colourful, rad people.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "109500"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90058,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90059,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90060,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90061,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90062,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90063,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90064,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90065,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90066,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90067,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90068,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90069,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90070,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90071,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90072,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90073,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90074,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/summer-oak.jpg",
+          "alt": "Summer in the city",
+          "name": "summer-oak"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/summer-mockup2.jpg",
+          "alt": "Summer in the city",
+          "name": "summer-mockup2"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/summer-oak-print.jpg",
+          "alt": "Summer in the city",
+          "name": "summer-oak-print"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/Summer-OG.jpg",
+          "alt": "Summer in the city",
+          "name": "Summer-OG"
+        }
+      ]
+    },
+    {
+      "id": 90021,
+      "name": "Stones",
+      "slug": "stones",
+      "sku": "STONES",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; Oak float frame.</p>\n<hr />\n<p>Stones was my attempt to get away from the bright colours and tap into the deep spiritual history of the stone. The rock. The solidness. Ancestors. Those that walked the earth long before us. Where we come from. Stop &amp; think about it for a second. And then buy this painting.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "260000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90039,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90040,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90041,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90042,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90043,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90044,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90045,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90046,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90047,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90048,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90049,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90052,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90053,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90054,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90055,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90056,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90057,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/storm-black-1.jpg",
+          "alt": "Stones",
+          "name": "storm-black"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/stones-mock1.jpg",
+          "alt": "Stones",
+          "name": "stones-mock1"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/stones-mock2.jpg",
+          "alt": "Stones",
+          "name": "stones-mock2"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/storm-oak-print-1.jpg",
+          "alt": "Stones",
+          "name": "storm-oak-print"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/storm-OG-1.jpg",
+          "alt": "Stones",
+          "name": "storm-OG"
+        }
+      ]
+    },
+    {
+      "id": 90020,
+      "name": "Fossil",
+      "slug": "fossil",
+      "sku": "FOSSIL",
+      "descriptionHtml": "<p><strong>Medium:</strong> Acrylic on canvas &#8211; White float frame.</p>\n<hr />\n<p>Fossil was a painting that I painted over 3 times. It has amazing amount of texture because of this and each layer creates depth and an interactive touch friendly experience.</p>\n<p>Gritty but beautiful is how I would describe this painting. Bright colours on top of earthy tones. A feast for the senses.</p>",
+      "shortDescription": "",
+      "categories": [
+        25
+      ],
+      "priceRange": {
+        "min_amount": "29500",
+        "max_amount": "260000"
+      },
+      "currency": "AUD",
+      "attributes": [
+        {
+          "name": "Type",
+          "terms": [
+            "Original",
+            "Canvas Print",
+            "Paper Print"
+          ]
+        },
+        {
+          "name": "Size",
+          "terms": [
+            "Original (one of one)",
+            "Small",
+            "Large"
+          ]
+        },
+        {
+          "name": "Frame",
+          "terms": [
+            "No frame",
+            "Oak",
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "variations": [
+        {
+          "id": 90022,
+          "attributes": {
+            "Type": "Original",
+            "Size": "Original (one of one)",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90023,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90024,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90025,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90026,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90027,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90028,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90029,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90030,
+          "attributes": {
+            "Type": "Canvas Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90031,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90032,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90033,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90034,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Small",
+            "Frame": "Black"
+          }
+        },
+        {
+          "id": 90035,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "No frame"
+          }
+        },
+        {
+          "id": 90036,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Oak"
+          }
+        },
+        {
+          "id": 90037,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "White"
+          }
+        },
+        {
+          "id": 90038,
+          "attributes": {
+            "Type": "Paper Print",
+            "Size": "Large",
+            "Frame": "Black"
+          }
+        }
+      ],
+      "images": [
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/fossil-oak-frame.jpg",
+          "alt": "Fossil",
+          "name": "fossil-oak-frame"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/06/artwork-render1web.jpg",
+          "alt": "Fossil",
+          "name": "artwork-render1web"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/fossil-original.jpg",
+          "alt": "Fossil",
+          "name": "fossil-original"
+        },
+        {
+          "src": "https://haydengoseek.com/wp-content/uploads/2026/07/fossil-print-oak-frame-1.jpg",
+          "alt": "Fossil",
+          "name": "fossil-print-oak-frame"
+        }
+      ]
+    }
+  ]
+}

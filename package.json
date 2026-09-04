@@ -1,0 +1,17 @@
+{
+  "name": "haydengoseek",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix apps/storefront install && npm --prefix apps/backend install && npm --prefix apps/studio install",
+    "dev": "concurrently -n storefront,backend,studio -c blue,green,magenta \"npm --prefix apps/storefront run dev\" \"npm --prefix apps/backend run dev\" \"npm --prefix apps/studio run dev\"",
+    "dev:storefront": "npm --prefix apps/storefront run dev",
+    "dev:backend": "npm --prefix apps/backend run dev",
+    "dev:studio": "npm --prefix apps/studio run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
