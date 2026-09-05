@@ -1,11 +1,20 @@
-import { listProducts } from "@/lib/medusa"
-import { getHomePage, getFaqItems, getArtistBio } from "@/lib/sanity"
-import Hero from "@/components/landing/Hero"
-import CategoryGrid from "@/components/landing/CategoryGrid"
-import Gallery from "@/components/landing/Gallery"
-import About from "@/components/landing/About"
+import { listProducts, type ProductListItem } from "@/lib/medusa"
+import { getHomePage, getFaqItems, getArtistBio, urlForImage } from "@/lib/sanity"
+import { portableTextToPlainText } from "@/lib/portableText"
+import HeroCinematic from "@/components/landing/HeroCinematic"
+import ArtworksDragSlider from "@/components/landing/ArtworksDragSlider"
+import StatsScroller from "@/components/landing/StatsScroller"
+import TeamSlider from "@/components/landing/TeamSlider"
 import Faq from "@/components/landing/Faq"
-import ClosingCta from "@/components/landing/ClosingCta"
+import ContactSection from "@/components/landing/ContactSection"
+
+// Cycles through products with a thumbnail so a section always gets the
+// image count it asks for, even if the catalog has fewer products than that.
+function pickImages(products: ProductListItem[], count: number, offset = 0): string[] {
+  const withThumbs = products.filter((p): p is ProductListItem & { thumbnail: string } => !!p.thumbnail)
+  if (withThumbs.length === 0) return []
+  return Array.from({ length: count }, (_, i) => withThumbs[(offset + i) % withThumbs.length].thumbnail)
+}
 
 export default async function HomePage() {
   const [products, homePage, faqItems, artistBio] = await Promise.all([
@@ -15,26 +24,42 @@ export default async function HomePage() {
     getArtistBio(),
   ])
 
-  const categories = homePage?.collectionTeasers?.length
-    ? homePage.collectionTeasers.map((teaser) => ({
-        title: teaser.title,
-        description: teaser.description ?? "",
-        href: teaser.medusaCategoryHandle ? `/shop?category=${teaser.medusaCategoryHandle}` : "/shop",
-      }))
-    : undefined
+  const heroImages = pickImages(products, 4, 0)
+  const statsBackdrops = pickImages(products, 3, 5)
 
   return (
     <div>
-      <Hero
-        heading={homePage?.heading}
-        subheading={homePage?.subheading ?? undefined}
-        products={products}
+      <HeroCinematic
+        headline={homePage?.heading ?? undefined}
+        revealStatement={homePage?.subheading ?? undefined}
+        images={{
+          backdrop: heroImages[0] ?? "",
+          insetReveal: heroImages[1] ?? "",
+          diamondReveal: heroImages[2] ?? "",
+          closing: heroImages[3] ?? "",
+        }}
       />
-      <CategoryGrid categories={categories} />
-      <Gallery products={products.slice(3)} />
-      <About name={artistBio?.name ?? undefined} bio={artistBio?.bio} portrait={artistBio?.portrait} />
+
+      <ArtworksDragSlider products={products} />
+
+      <StatsScroller backdrops={statsBackdrops} />
+
+      <TeamSlider
+        members={[
+          {
+            name: (artistBio?.name ?? "Hayden Andrews").split(" "),
+            role: "Artist & Musician",
+            image: artistBio?.portrait ? urlForImage(artistBio.portrait).width(1200).url() : "",
+            bio:
+              portableTextToPlainText(artistBio?.bio) ||
+              "A Gold Coast-based artist, musician, songwriter and educator whose work is inspired by connection, storytelling and the beauty found in everyday life. He personally creates, scans, prints and frames every piece himself.",
+          },
+        ]}
+      />
+
       {homePage?.showFaqSection !== false && <Faq items={faqItems.length > 0 ? faqItems : undefined} />}
-      <ClosingCta />
+
+      <ContactSection />
     </div>
   )
 }
