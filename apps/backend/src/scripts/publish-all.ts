@@ -1,7 +1,7 @@
-// Local-dev convenience: publishes every product so the storefront has real
-// data to build/QA against. Pricing is still placeholder (see seed script) —
-// do NOT run this against a production database. Revert with status "draft"
-// per-product, or re-seed, before going live.
+// Publishes every product. Originally local-dev-only while pricing was a
+// placeholder (see seed script's history) — safe to run against production
+// now that update-variant-prices.ts has applied exact per-variation prices
+// scraped from the live WooCommerce site.
 import { MedusaContainer } from "@medusajs/framework"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import { updateProductsWorkflow } from "@medusajs/medusa/core-flows"

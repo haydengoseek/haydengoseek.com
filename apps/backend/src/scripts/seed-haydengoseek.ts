@@ -1,21 +1,23 @@
 /**
  * Seeds the Medusa catalog from scripts/haydengoseek-import/catalog.json (run
  * `node scripts/haydengoseek-import/fetch-catalog.mjs` from the repo root first
- * to (re)generate it from the live WordPress site) for product/variant/price
- * data, and from Artwork-images/<Folder>/ (Hayden's real photography, resupplied
- * 2026-09-05) for images — uploaded to Medusa's file storage and tagged per
- * artwork/frame/type here (see tagImageFile below), not pulled from catalog.json.
+ * to (re)generate it from the live WordPress site) for product/variant data,
+ * scripts/haydengoseek-import/variation-prices.json (run
+ * `node scripts/haydengoseek-import/fetch-variation-prices.mjs`) for exact
+ * per-variation pricing, and from Artwork-images/<Folder>/ (Hayden's real
+ * photography, resupplied 2026-09-05) for images — uploaded to Medusa's file
+ * storage and tagged per artwork/frame/type here (see tagImageFile below),
+ * not pulled from catalog.json.
  *
- * PRICING IS A PLACEHOLDER. The public WooCommerce API only exposes a price
- * *range* per product (min/max across all variations), not the exact price of
- * each Type x Size x Frame combination. Until Hayden's WooCommerce Products ->
- * Export CSV is available (see root README "Data migration"), this script:
- *   - prices every "Original" variant at the product's max_amount (Originals
- *     are usually the most expensive option)
- *   - prices every print variant (Canvas/Paper) at the product's min_amount
- * Once the CSV is available, replace `resolveVariantPrice` below with a real
- * lookup (join on SKU or on the Type/Size/Frame combo) — everything else in
- * this script (options, categories, images, stock) does not need to change.
+ * Pricing: the public WooCommerce Store API only exposes a price *range* per
+ * product, not per variation — but each classic product page embeds a
+ * `data-product_variations` attribute with the real display_price per
+ * Type/Size/Frame combination (WooCommerce's own variation-form data,
+ * server-rendered, no auth needed), which fetch-variation-prices.mjs scrapes.
+ * `resolveVariantPrice` looks up that exact price by slug + Type/Size/Frame;
+ * the old min/max-of-range placeholder only kicks in if a combination is
+ * somehow missing from the scrape (shouldn't happen — 14/14 covered as of
+ * 2026-09-05).
  *
  * Run with: npx medusa exec ./src/scripts/seed-haydengoseek.ts
  */
@@ -156,9 +158,34 @@ function stripHtml(html: string) {
     .trim()
 }
 
-// Placeholder only — see file header. Replace once real per-variation
-// pricing (from the WooCommerce CSV export) is available.
-function resolveVariantPrice(product: CatalogProduct, variation: CatalogVariation) {
+type VariationPrices = {
+  products: {
+    slug: string
+    variations: { type: string; size: string; frame: string; price: number }[]
+  }[]
+}
+
+function buildPriceLookup(variationPrices: VariationPrices) {
+  const map = new Map<string, number>()
+  for (const product of variationPrices.products) {
+    for (const v of product.variations) {
+      map.set(`${product.slug}|${v.type}|${v.size}|${v.frame}`, v.price)
+    }
+  }
+  return map
+}
+
+function resolveVariantPrice(
+  product: CatalogProduct,
+  variation: CatalogVariation,
+  priceLookup: Map<string, number>,
+  logger: { warn: (msg: string) => void }
+) {
+  const key = `${product.slug}|${variation.attributes["Type"]}|${variation.attributes["Size"]}|${variation.attributes["Frame"]}`
+  const exact = priceLookup.get(key)
+  if (exact !== undefined) return exact
+
+  logger.warn(`No scraped price for ${key} — falling back to price-range placeholder`)
   const min = Number(product.priceRange?.min_amount ?? "29500") / 100
   const max = Number(product.priceRange?.max_amount ?? min) / 100
   return variation.attributes["Type"] === "Original" ? max : min
@@ -172,6 +199,14 @@ export default async function seedHaydengoseek({ container }: { container: Medus
   const catalogPath = path.resolve(__dirname, "../../../../scripts/haydengoseek-import/catalog.json")
   const catalog: Catalog = JSON.parse(readFileSync(catalogPath, "utf-8"))
   logger.info(`Loaded ${catalog.products.length} products from ${catalogPath}`)
+
+  const variationPricesPath = path.resolve(
+    __dirname,
+    "../../../../scripts/haydengoseek-import/variation-prices.json"
+  )
+  const variationPrices: VariationPrices = JSON.parse(readFileSync(variationPricesPath, "utf-8"))
+  const priceLookup = buildPriceLookup(variationPrices)
+  logger.info(`Loaded exact prices for ${variationPrices.products.length} products from ${variationPricesPath}`)
 
   logger.info("Seeding store, region (AU/AUD), sales channel...")
   const {
@@ -363,7 +398,12 @@ export default async function seedHaydengoseek({ container }: { container: Medus
             sku: `${product.sku}-${slug}`,
             options: variation.attributes,
             manage_inventory: isOriginal,
-            prices: [{ amount: resolveVariantPrice(product, variation), currency_code: "aud" }],
+            prices: [
+              {
+                amount: resolveVariantPrice(product, variation, priceLookup, logger),
+                currency_code: "aud",
+              },
+            ],
           }
         }),
         sales_channels: [{ id: salesChannel.id }],

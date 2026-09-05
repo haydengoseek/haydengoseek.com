@@ -15,11 +15,10 @@ and Vercel accounts, as of 2026-09-05:
   project "storefront" under the `haydengoseek` team).
 
 **Still open before this is customer-ready:**
-1. **Products are seeded but in `draft` status** — the shop page is
-   currently empty. Pricing is still placeholder (see stubs below); review
-   and fix real prices before publishing via the admin
-   (`npm run dev`'s local admin — production admin is disabled, see
-   "Deployment — current status" below).
+1. ~~Fix placeholder pricing~~ — done 2026-09-05. All 14 products are
+   **live and published** with exact per-variation prices, scraped
+   directly from the WooCommerce product pages rather than waiting on a
+   CSV export. See "Deployment — current status" below for how.
 2. **`STRIPE_WEBHOOK_SECRET` isn't set on the backend yet** — creating a
    Stripe webhook endpoint needs to be done manually via the Stripe
    Dashboard (an agent session can't do this — it's treated as a sensitive
@@ -88,16 +87,20 @@ docker-compose.yml       Local Postgres + Redis for the Medusa backend.
   a remote yet.
 
 **Deliberately stubbed — needs real input before this goes further:**
-- **Pricing is a placeholder.** The public WooCommerce API only exposes a
-  price *range* per product, not the exact price of each Type/Size/Frame
-  combination. The seed script currently prices every Original at the
-  product's max price and every print at its min price. **Get Hayden's
-  WooCommerce → Products → Export CSV** (exact per-variation SKU/price/
-  stock) and replace `resolveVariantPrice()` in the seed script with a real
-  lookup — everything else (options, images, categories) doesn't need to
-  change. All seeded products are left in `draft` status for this reason —
-  they only get flipped to `published` locally, temporarily, for QA
-  (`apps/backend/src/scripts/publish-all.ts`).
+- ~~Pricing is a placeholder~~ — **fixed 2026-09-05.** The public
+  WooCommerce Store API only exposes a price *range* per product, but each
+  classic product page embeds a `data-product_variations` attribute with
+  the real per-variation price (WooCommerce's own variation-form data,
+  server-rendered, no auth) — `scripts/haydengoseek-import/fetch-variation-prices.mjs`
+  scrapes it for all 14 products into `variation-prices.json`, and
+  `resolveVariantPrice()` in the seed script looks up the exact price by
+  slug + Type/Size/Frame instead of guessing from the range. Production's
+  already-seeded prices were fixed in place with
+  `apps/backend/src/scripts/update-variant-prices.ts` (rather than
+  reseeding, which would've conflicted on the existing products' unique
+  handles) and then published with `publish-all.ts` — all 14 are live now.
+  Re-run `fetch-variation-prices.mjs` if Hayden changes prices on the old
+  WordPress site before it's decommissioned.
 - **Shipping rates are a placeholder** ($25 flat) — need Hayden's actual
   domestic/international rates.
 - **No real Sanity project yet** — creating one needs a sanity.io login
@@ -198,10 +201,9 @@ Both backend and storefront are live, as of 2026-09-05.
     `railway variable set STRIPE_WEBHOOK_SECRET=whsec_... --service backend`.
     (Can't be automated from an agent session — Stripe account changes are
     treated as sensitive.)
-  - **Products are seeded but still `draft`** — `/store/products` returns
-    none until they're published, which needs real pricing first (see
-    stubs list). Publish via the local admin (`npm run dev`) once ready —
-    there's no `publish-all.ts` run against production yet, deliberately.
+  - ~~Products seeded but draft~~ — **published 2026-09-05** with exact
+    scraped pricing (see the pricing stub entry above for how). All 14 are
+    live on `/store/products` and the storefront's `/shop`.
   - **Admin dashboard is disabled in production** (`DISABLE_ADMIN=true`) —
     see the gotcha below. Manage the store via `npm run dev`'s local admin
     for now.
