@@ -24,7 +24,11 @@ export default async function HomePage() {
     getArtistBio(),
   ])
 
-  const heroImages = pickImages(products, 4, 0)
+  // First two hero beats use Hayden's real artwork photography (optimized,
+  // Weavings rotated to landscape — see public/hero/); the remaining two
+  // beats still cycle live product thumbnails until there's more real
+  // photography to slot in.
+  const heroImages = pickImages(products, 2, 2)
   const statsBackdrops = pickImages(products, 3, 5)
 
   return (
@@ -33,10 +37,10 @@ export default async function HomePage() {
         headline={homePage?.heading ?? undefined}
         revealStatement={homePage?.subheading ?? undefined}
         images={{
-          backdrop: heroImages[0] ?? "",
-          insetReveal: heroImages[1] ?? "",
-          diamondReveal: heroImages[2] ?? "",
-          closing: heroImages[3] ?? "",
+          backdrop: "/hero/my-friends.jpg",
+          insetReveal: "/hero/weavings.jpg",
+          diamondReveal: heroImages[0] ?? "",
+          closing: heroImages[1] ?? "",
         }}
       />
 
