@@ -3,6 +3,14 @@ import { loadEnv, defineConfig } from '@medusajs/framework/utils'
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 module.exports = defineConfig({
+  // Disabled in production via DISABLE_ADMIN: `medusa start` from the
+  // project root only finds the admin build's index.html when run from
+  // .medusa/server (the actual medusa build output dir), which broke the
+  // Railway deploy. Manage the store via `npm run dev`'s admin locally for
+  // now instead of fighting that path — revisit hosting admin properly later.
+  admin: {
+    disable: process.env.DISABLE_ADMIN === "true",
+  },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL,
@@ -39,31 +47,46 @@ module.exports = defineConfig({
         ],
       },
     },
-    // Only registered once S3 env vars are set — falls back to Medusa's local
-    // filesystem file provider otherwise (fine for local dev, not for
-    // production/multi-instance deploys).
-    ...(process.env.S3_FILE_URL
-      ? [
-          {
-            resolve: "@medusajs/medusa/file",
-            options: {
-              providers: [
-                {
-                  resolve: "@medusajs/file-s3",
-                  id: "s3",
-                  options: {
-                    fileUrl: process.env.S3_FILE_URL,
-                    accessKeyId: process.env.S3_ACCESS_KEY_ID,
-                    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-                    region: process.env.S3_REGION,
-                    bucket: process.env.S3_BUCKET,
-                    endpoint: process.env.S3_ENDPOINT,
-                  },
+    // Uses S3 once its env vars are set. Otherwise falls back to Medusa's
+    // local filesystem provider, pointed at UPLOAD_DIR — in production this
+    // must be a mounted Railway Volume path (not the container's ephemeral
+    // disk), or every uploaded file is lost on the next redeploy. MEDUSA_BACKEND_URL
+    // must be the backend's real public URL in production too, since the
+    // local provider bakes it into every file's returned URL.
+    process.env.S3_FILE_URL
+      ? {
+          resolve: "@medusajs/medusa/file",
+          options: {
+            providers: [
+              {
+                resolve: "@medusajs/file-s3",
+                id: "s3",
+                options: {
+                  fileUrl: process.env.S3_FILE_URL,
+                  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+                  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+                  region: process.env.S3_REGION,
+                  bucket: process.env.S3_BUCKET,
+                  endpoint: process.env.S3_ENDPOINT,
                 },
-              ],
-            },
+              },
+            ],
           },
-        ]
-      : []),
+        }
+      : {
+          resolve: "@medusajs/medusa/file",
+          options: {
+            providers: [
+              {
+                resolve: "@medusajs/file-local",
+                id: "local",
+                options: {
+                  upload_dir: process.env.UPLOAD_DIR,
+                  backend_url: `${process.env.MEDUSA_BACKEND_URL || "http://localhost:9000"}/static`,
+                },
+              },
+            ],
+          },
+        },
   ],
 })

@@ -3,10 +3,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      // Product images uploaded to Medusa's local file storage (dev only —
-      // see apps/backend/src/scripts/seed-haydengoseek.ts and medusa-config.ts's
-      // conditional S3 provider, which replaces this in production).
+      // Product images served from Medusa's local file provider, backed by a
+      // Railway Volume in production (see medusa-config.ts) — same /static
+      // path locally and in prod, just a different host.
       { protocol: "http", hostname: "localhost", port: "9000", pathname: "/static/**" },
+      { protocol: "https", hostname: "backend-production-eae1.up.railway.app", pathname: "/static/**" },
       // Legacy fallback for any product without a local image folder yet.
       { protocol: "https", hostname: "haydengoseek.com" },
       { protocol: "https", hostname: "cdn.sanity.io" },

@@ -4,26 +4,29 @@ Rebuild of haydengoseek.com (currently WordPress/WooCommerce) on Next.js +
 Tailwind (storefront) / Sanity (editorial content) / Medusa (commerce) /
 Stripe (payments).
 
-## ⏸ Paused here — resuming with Hayden's own Railway account
+## 🚀 Live — both backend and storefront deployed
 
-Everything below is built and working **locally**. Deployment is the next
-step, paused as of 2026-09-05 so Hayden can set up his own Railway account
-(he'll absorb the monthly hosting cost rather than it going on the
-developer's account).
+Both the backend and storefront are now deployed to Hayden's own Railway
+and Vercel accounts, as of 2026-09-05:
+- **Backend**: `https://backend-production-eae1.up.railway.app` (Railway
+  project "haydengoseek" — Postgres, Redis, backend services; volume
+  attached for images; migrations run; 14 products seeded).
+- **Storefront**: `https://storefront-three-ochre.vercel.app` (Vercel
+  project "storefront" under the `haydengoseek` team).
 
-**To resume:**
-1. Get Hayden's Railway account login/access.
-2. The Vercel CLI here is already logged in (as `markperic`) — reuse it, or
-   switch if the storefront should deploy under Hayden's own Vercel account
-   too (same reasoning as Railway — ask him for that).
-3. Railway CLI here is currently logged into the developer's own account
-   (`markperic@gmail.com`) from evaluating hosting options — run
-   `npx @railway/cli logout` then `npx @railway/cli login` with Hayden's
-   account before provisioning anything, so it lands on his billing.
-4. See "Deployment — where this was headed" below for the plan that was in
-   progress when we paused (backend hosting options were compared; Railway
-   Hobby $5/mo was the recommendation, see that section for why and for the
-   free/open-source alternatives considered).
+**Still open before this is customer-ready:**
+1. **Products are seeded but in `draft` status** — the shop page is
+   currently empty. Pricing is still placeholder (see stubs below); review
+   and fix real prices before publishing via the admin
+   (`npm run dev`'s local admin — production admin is disabled, see
+   "Deployment — current status" below).
+2. **`STRIPE_WEBHOOK_SECRET` isn't set on the backend yet** — creating a
+   Stripe webhook endpoint needs to be done manually via the Stripe
+   Dashboard (an agent session can't do this — it's treated as a sensitive
+   account change). See "Deployment — current status" for the exact URL/
+   events to configure.
+3. Real (live) Stripe keys, a real Sanity project, and the cart/checkout
+   UI are still stubs — see the full list below.
 
 ## Structure
 
@@ -175,14 +178,62 @@ secret is tied to that specific `stripe listen` session — regenerate it the
 same way if you restart that process. Stable production webhooks come from
 a Dashboard-created endpoint instead, once deployed.
 
-## Deployment — where this was headed
+## Deployment — current status
 
-Not deployed yet (paused — see top of file). For when it resumes:
+Both backend and storefront are live, as of 2026-09-05.
 
-- **Storefront → Vercel.** CLI already authenticated locally.
-- **Backend → hosting TBD, but Railway Hobby ($5/mo minimum) was the
-  recommendation** — least setup/maintenance for a Postgres+Redis+Node
-  stack, one dashboard. Compared against:
+- **Backend → Railway.** Project "haydengoseek" on Hayden's account (Hobby
+  plan), live at `https://backend-production-eae1.up.railway.app`.
+  Services: `Postgres`, `Redis`, `backend` (this app, deployed via
+  `railway up` from `apps/backend`). Migrations run, volume attached at
+  `/app/static` for durable file storage, 14 products seeded (see
+  "Seeding production" below for how, since the seed script needs files
+  from outside `apps/backend`). Still open:
+  - **`STRIPE_WEBHOOK_SECRET` isn't set yet.** Create a webhook endpoint in
+    the Stripe Dashboard pointed at
+    `https://backend-production-eae1.up.railway.app/hooks/payment/stripe`
+    for these events: `payment_intent.amount_capturable_updated`,
+    `.canceled`, `.partially_funded`, `.payment_failed`, `.processing`,
+    `.requires_action`, `.succeeded` — then
+    `railway variable set STRIPE_WEBHOOK_SECRET=whsec_... --service backend`.
+    (Can't be automated from an agent session — Stripe account changes are
+    treated as sensitive.)
+  - **Products are seeded but still `draft`** — `/store/products` returns
+    none until they're published, which needs real pricing first (see
+    stubs list). Publish via the local admin (`npm run dev`) once ready —
+    there's no `publish-all.ts` run against production yet, deliberately.
+  - **Admin dashboard is disabled in production** (`DISABLE_ADMIN=true`) —
+    see the gotcha below. Manage the store via `npm run dev`'s local admin
+    for now.
+  - Real (live) Stripe keys still need to replace the test-mode
+    `STRIPE_API_KEY` before actually taking payment — see the stubs list.
+- **Storefront → Vercel.** Project "storefront" under the `haydengoseek`
+  Vercel team, live at `https://storefront-three-ochre.vercel.app`. Env
+  vars set: `NEXT_PUBLIC_MEDUSA_BACKEND_URL` (the Railway URL above),
+  `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY` (from the production seed run —
+  regenerate and update here if the production store ever gets reseeded),
+  `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (test mode, same as local),
+  `NEXT_PUBLIC_SANITY_DATASET`. `apps/storefront/vercel.json` pins
+  `framework: nextjs` — without it Vercel failed to auto-detect Next.js in
+  this monorepo subdirectory and looked for a `dist` output folder instead
+  of `.next`.
+- **Seeding production** — the seed script resolves `catalog.json` and
+  `Artwork-images/` relative to its own file location assuming the full
+  monorepo checkout (`../../../../` from `apps/backend/src/scripts/`), but
+  Railway only deploys `apps/backend` itself, so those paths don't exist in
+  the container. Worked around by uploading both directly into the running
+  container first: `railway service files upload
+  ../../scripts/haydengoseek-import/catalog.json
+  /scripts/haydengoseek-import/catalog.json --service backend` and the same
+  for `../../Artwork-images` → `/Artwork-images`, then
+  `railway ssh --service backend -- npx medusa exec
+  ./src/scripts/seed-haydengoseek.ts`. Note **`railway run` won't work for
+  this** — it executes locally but injects Railway's internal DB hostname
+  (`postgres.railway.internal`), which only resolves from inside Railway's
+  network; `railway ssh` (which runs the actual command on the container)
+  is required for anything touching the database.
+- **Backend hosting comparison** (why Railway Hobby was chosen over the
+  alternatives):
   - *Railway Free* — technically free (30-day trial w/ $5 credit, then very
     tight limits: 1 project, 3 services, 0.5GB RAM/service, 0.5GB volume
     storage) — workable but cramped for Postgres+Redis+Medusa together.
@@ -194,15 +245,35 @@ Not deployed yet (paused — see top of file). For when it resumes:
   - *Oracle Cloud "Always Free" + Coolify* — genuinely free forever and open
     source (Coolify is self-hosted, Railway-like deploy UI), but you own the
     server: OS updates, SSL, backups, uptime all become your responsibility.
-- **Before deploying the backend**: local file storage (what's seeded now)
-  won't survive a Railway/Render redeploy — needs real persistent storage
-  (a Railway Volume, or S3-compatible storage like Supabase Storage/R2,
-  matching the pattern this developer uses on sibling projects) configured
-  in `medusa-config.ts`'s conditional S3 file provider before going live,
-  or the product photos will vanish on the first redeploy.
+- **File storage — using a Railway Volume, attached and working.** Local
+  file storage doesn't survive a Railway redeploy on its own, since the
+  container's disk is ephemeral. `medusa-config.ts` explicitly configures
+  `@medusajs/file-local` with `upload_dir`/`backend_url` read from
+  `UPLOAD_DIR`/`MEDUSA_BACKEND_URL` (falls back to `./static`/localhost for
+  local dev, unchanged) — in production these point at the attached Volume
+  (`/app/static`) and the backend's public Railway URL. Product images
+  uploaded by the seed script now persist across redeploys. An
+  S3-compatible provider (`@medusajs/file-s3`, e.g. Supabase Storage or
+  Cloudflare R2) is still wired up as an alternative — set `S3_FILE_URL`
+  (and the other `S3_*` vars) to switch to it instead, see `.env.example`.
 - **Sanity** → Sanity's managed cloud (needs a project created — separate
   from Vercel/Railway, doesn't need Hayden's billing info, free tier is
   generous for a site this size).
+- **Admin dashboard gotcha (why it's disabled in production).** `medusa
+  build` compiles the admin dashboard's static files into
+  `.medusa/server/public/admin`, but `medusa start` run from the project
+  root (what a plain `npm run build && npm run start` Railway deploy does)
+  looks for them at `<cwd>/public/admin` instead and crash-loops with
+  "Could not find index.html in the admin build directory". The documented
+  fix is deploying from inside `.medusa/server` instead, but that didn't
+  work reliably on Railway here (the container couldn't find that directory
+  at the exact moment the start command ran, for reasons that didn't fully
+  resolve — see git history around 2026-09-05 for what was tried). Simplest
+  working fix: set `DISABLE_ADMIN=true` on the Railway backend service
+  (reads into `medusa-config.ts`'s `admin.disable`) so the server never
+  tries to serve it. Revisit properly hosting the admin dashboard
+  separately if Hayden needs to manage the store without a local dev
+  server running.
 
 ## Data migration source
 
