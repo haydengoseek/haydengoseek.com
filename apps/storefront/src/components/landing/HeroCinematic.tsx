@@ -62,7 +62,7 @@ export default function HeroCinematic({
   accent = "#a8af93",
   zoomHeading = "Original artworks and museum-quality fine art prints by Hayden Andrews.",
   revealLabel = "About Hayden",
-  revealStatement = "Original artworks, museum-quality fine art prints and handcrafted framing, all created under one roof by Hayden Andrews.",
+  revealStatement = "Explore original artworks, museum-quality fine art prints and handcrafted framing, all created under one roof. Inspired by a lifetime of music, creativity and storytelling, each piece is professionally scanned, printed and framed by Hayden himself, ensuring every artwork is presented exactly as intended from the first brushstroke to the finished piece on your wall.",
   ctaLabel = "Shop Art",
   ctaHref = "/shop",
   images,
@@ -144,9 +144,9 @@ export default function HeroCinematic({
           style={{ opacity: panelOpacity }}
           className="absolute inset-0 flex items-center justify-center bg-bg px-6 md:px-10"
         >
-          <motion.div style={{ y: revealY, opacity: revealOpacity }} className="max-w-4xl text-center">
+          <motion.div style={{ y: revealY, opacity: revealOpacity }} className="max-w-2xl text-center">
             <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted">{revealLabel}</p>
-            <p className="mt-6 text-[clamp(1.375rem,3.4vw,2.75rem)] leading-[1.15] tracking-[-0.01em] text-ink">
+            <p className="mt-6 text-[clamp(1rem,1.7vw,1.375rem)] leading-relaxed tracking-[-0.01em] text-ink">
               {revealStatement}
             </p>
             <Link
