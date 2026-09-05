@@ -9,7 +9,6 @@ import { useScrollValue } from "@/lib/motion-variants"
 type Images = {
   backdrop: string
   insetReveal: string
-  diamondReveal: string
   closing: string
 }
 
@@ -37,7 +36,7 @@ function ClosingFrame({
       <div className="absolute inset-0 flex items-center justify-center px-6">
         <motion.p
           style={{ opacity: headingOpacity }}
-          className="max-w-[15ch] text-center text-[clamp(1.75rem,5.6vw,5rem)] font-semibold uppercase leading-[0.88] tracking-[-0.03em] text-white"
+          className="max-w-[30ch] text-center text-[clamp(1.25rem,3.6vw,3rem)] leading-[1.2] tracking-[-0.01em] text-white"
         >
           {heading}
         </motion.p>
@@ -48,17 +47,20 @@ function ClosingFrame({
 
 /**
  * Ported from Claude-Agency-Website-Build's module 87 (Hero — Cinematic
- * Curtain). Same six-beat scroll-scrubbed timeline, restyled: the closing
- * reveal panel uses this site's own bg/ink tokens (instead of the source's
- * near-black-on-near-white) so it hands off seamlessly into the rest of the
- * page, and it takes plain image URLs instead of the source's local
- * placeholder image set, so it can be fed real product photography.
+ * Curtain), restyled: the closing reveal panel uses this site's own bg/ink
+ * tokens instead of the source's near-black-on-near-white, so it hands off
+ * seamlessly into the rest of the page. Beat 2's headline is the logo
+ * instead of text, and the source's two-reveal beat 4 (rectangle + diamond)
+ * is trimmed to one (rectangle only) — the later beats' scroll ranges are
+ * compacted to fill the freed-up scroll distance rather than leaving a dead
+ * hold where the diamond used to be.
  */
 export default function HeroCinematic({
   eyebrow = "Gold Coast, Australia",
-  headline = "Original art\nmade by hand",
+  logoSrc = "/logo-white.svg",
+  logoAlt = "HaydenGoSeek",
   accent = "#6b7a5e",
-  zoomHeading = "Every piece tells a story",
+  zoomHeading = "Original artworks and museum-quality fine art prints by Hayden Andrews.",
   revealLabel = "About Hayden",
   revealStatement = "Original artworks, museum-quality fine art prints and handcrafted framing, all created under one roof by Hayden Andrews.",
   ctaLabel = "Shop Art",
@@ -66,7 +68,8 @@ export default function HeroCinematic({
   images,
 }: {
   eyebrow?: string
-  headline?: string
+  logoSrc?: string
+  logoAlt?: string
   accent?: string
   zoomHeading?: string
   revealLabel?: string
@@ -78,7 +81,7 @@ export default function HeroCinematic({
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] })
 
-  // Beat 1–2 — backdrop settles, headline lifts away.
+  // Beat 1–2 — backdrop settles, logo lifts away.
   const bgScale = useTransform(scrollYProgress, [0, 0.24], [1.12, 1])
   const bgY = useTransform(scrollYProgress, [0, 0.24], ["0%", "-6%"])
   const titleY = useTransform(scrollYProgress, [0, 0.22], [0, -70])
@@ -89,35 +92,27 @@ export default function HeroCinematic({
   const curtainDraw = useTransform(scrollYProgress, [0.05, 0.19], [0, 1])
   const curtainWipe = useTransform(scrollYProgress, [0.28, 0.38], [0.006, 1])
 
-  // Beat 4 — two clip reveals: a rectangle opening from the centre, then a
-  // diamond growing past 50% to cover.
+  // Beat 4 — a rectangle clip opening from the centre.
   const insetPct = useTransform(scrollYProgress, [0.4, 0.52], [50, 0])
   const insetClip = useMotionTemplate`inset(${insetPct}% ${insetPct}%)`
 
-  const diamond = useTransform(scrollYProgress, [0.52, 0.64], [0, 100])
-  const dTop = useTransform(diamond, (v) => 50 - v)
-  const dRight = useTransform(diamond, (v) => 50 + v)
-  const dBottom = useTransform(diamond, (v) => 50 + v)
-  const dLeft = useTransform(diamond, (v) => 50 - v)
-  const diamondClip = useMotionTemplate`polygon(50% ${dTop}%, ${dRight}% 50%, 50% ${dBottom}%, ${dLeft}% 50%)`
-
   // Beat 5 — the closing still scales up from nothing, then holds.
-  const finalScale = useTransform(scrollYProgress, [0.66, 0.76], [0, 1])
-  const zoomHeadingOpacity = useScrollValue<number>(scrollYProgress, [0.7, 0.78], [0, 1])
+  const finalScale = useTransform(scrollYProgress, [0.54, 0.64], [0, 1])
+  const zoomHeadingOpacity = useScrollValue<number>(scrollYProgress, [0.58, 0.66], [0, 1])
 
   // Beat 6 — the split: the closing still is drawn twice, each clipped to one
   // half, and the halves slide apart to uncover the panel behind them.
-  const splitLeft = useTransform(scrollYProgress, [0.82, 0.96], ["0vw", "-52vw"])
-  const splitRight = useTransform(scrollYProgress, [0.82, 0.96], ["0vw", "52vw"])
+  const splitLeft = useTransform(scrollYProgress, [0.7, 0.84], ["0vw", "-52vw"])
+  const splitRight = useTransform(scrollYProgress, [0.7, 0.84], ["0vw", "52vw"])
 
-  const panelOpacity = useScrollValue(scrollYProgress, [0.76, 0.79], [0, 1])
-  const revealY = useTransform(scrollYProgress, [0.82, 0.98], [140, 0])
-  const revealOpacity = useScrollValue(scrollYProgress, [0.84, 0.94], [0, 1])
+  const panelOpacity = useScrollValue(scrollYProgress, [0.64, 0.67], [0, 1])
+  const revealY = useTransform(scrollYProgress, [0.7, 0.86], [140, 0])
+  const revealOpacity = useScrollValue(scrollYProgress, [0.72, 0.82], [0, 1])
 
   const chromeOpacity = useScrollValue(scrollYProgress, [0.2, 0.3], [1, 0])
 
   return (
-    <section ref={ref} className="relative h-[440vh] bg-black [overflow-anchor:none]">
+    <section ref={ref} className="relative h-[390vh] bg-black [overflow-anchor:none]">
       <div className="sticky top-0 h-screen overflow-hidden bg-black">
         {/* Beat 1 — backdrop */}
         <motion.div style={{ scale: bgScale, y: bgY }} className="absolute inset-0">
@@ -125,18 +120,12 @@ export default function HeroCinematic({
           <div className="absolute inset-0 bg-black/25" />
         </motion.div>
 
-        {/* Beat 2 — headline */}
+        {/* Beat 2 — logo */}
         <motion.div
           style={{ y: titleY, opacity: titleOpacity }}
           className="absolute inset-0 flex items-center justify-center px-7 md:px-6"
         >
-          <h1 className="max-w-5xl text-center text-[clamp(2.25rem,5.4vw,4.75rem)] font-semibold uppercase leading-[0.88] tracking-[-0.03em] text-white [text-wrap:balance]">
-            {headline.split("\n").map((line) => (
-              <span key={line} className="block">
-                {line}
-              </span>
-            ))}
-          </h1>
+          <img src={logoSrc} alt={logoAlt} className="w-[min(90vw,32rem)]" />
         </motion.div>
 
         {/* Beat 3 — the curtain */}
@@ -145,13 +134,9 @@ export default function HeroCinematic({
           className="absolute inset-0 origin-center"
         />
 
-        {/* Beat 4 — clip reveals */}
+        {/* Beat 4 — clip reveal */}
         <motion.div style={{ clipPath: insetClip }} className="absolute inset-0">
           <Image src={images.insetReveal} alt="" fill sizes="100vw" className="object-cover" />
-        </motion.div>
-
-        <motion.div style={{ clipPath: diamondClip }} className="absolute inset-0">
-          <Image src={images.diamondReveal} alt="" fill sizes="100vw" className="object-cover" />
         </motion.div>
 
         {/* Beat 6 — the panel uncovered by the split */}
