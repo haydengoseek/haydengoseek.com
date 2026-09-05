@@ -2,7 +2,7 @@ import { listProducts, type ProductListItem } from "@/lib/medusa"
 import { getHomePage, getFaqItems, getArtistBio, urlForImage } from "@/lib/sanity"
 import { portableTextToPlainText } from "@/lib/portableText"
 import HeroCinematic from "@/components/landing/HeroCinematic"
-import ArtworksDragSlider from "@/components/landing/ArtworksDragSlider"
+import ArtworksCarousel from "@/components/landing/ArtworksCarousel"
 import StatsScroller from "@/components/landing/StatsScroller"
 import TeamSlider from "@/components/landing/TeamSlider"
 import Faq from "@/components/landing/Faq"
@@ -39,7 +39,7 @@ export default async function HomePage() {
         }}
       />
 
-      <ArtworksDragSlider products={products} />
+      <ArtworksCarousel products={products} />
 
       <StatsScroller backdrops={statsBackdrops} />
 

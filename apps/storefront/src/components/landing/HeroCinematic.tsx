@@ -33,10 +33,13 @@ function ClosingFrame({
     <>
       <Image src={image} alt={decorative ? "" : heading} fill sizes="100vw" className="object-cover" />
       <div className="absolute inset-0 mix-blend-overlay" style={{ backgroundColor: accent }} />
+      {/* Scrim behind the text specifically — the accent tint above helps the
+          whole frame but isn't enough contrast for text over a bright photo. */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.15)_55%,rgba(0,0,0,0)_75%)]" />
       <div className="absolute inset-0 flex items-center justify-center px-6">
         <motion.p
           style={{ opacity: headingOpacity }}
-          className="max-w-[30ch] text-center text-[clamp(1.25rem,3.6vw,3rem)] leading-[1.2] tracking-[-0.01em] text-white"
+          className="max-w-[30ch] text-center text-[clamp(1.25rem,3.6vw,3rem)] leading-[1.2] tracking-[-0.01em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.65)]"
         >
           {heading}
         </motion.p>
