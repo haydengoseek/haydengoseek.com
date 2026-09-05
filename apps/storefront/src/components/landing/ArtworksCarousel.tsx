@@ -55,7 +55,7 @@ export default function ArtworksCarousel({
       <div className="mx-auto max-w-[1600px] px-4 sm:px-8">
         <ScrollReveal className="max-w-4xl">
           <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted">{eyebrow}</p>
-          <h2 className="mt-6 text-[clamp(2rem,5vw,4.25rem)] tracking-[-0.02em] text-ink">{title}</h2>
+          <h2 className="mt-6 text-[clamp(2rem,5vw,4.25rem)] leading-[1.05] tracking-[-0.02em] text-ink">{title}</h2>
         </ScrollReveal>
 
         <div className="relative mt-16 overflow-hidden">

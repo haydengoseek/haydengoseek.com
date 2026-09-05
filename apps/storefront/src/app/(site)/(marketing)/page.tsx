@@ -1,20 +1,11 @@
-import { listProducts, type ProductListItem } from "@/lib/medusa"
+import { listProducts } from "@/lib/medusa"
 import { getHomePage, getFaqItems, getArtistBio, urlForImage } from "@/lib/sanity"
 import { portableTextToPlainText } from "@/lib/portableText"
 import HeroCinematic from "@/components/landing/HeroCinematic"
 import ArtworksCarousel from "@/components/landing/ArtworksCarousel"
-import StatsScroller from "@/components/landing/StatsScroller"
 import TeamSlider from "@/components/landing/TeamSlider"
 import Faq from "@/components/landing/Faq"
 import ContactSection from "@/components/landing/ContactSection"
-
-// Cycles through products with a thumbnail so a section always gets the
-// image count it asks for, even if the catalog has fewer products than that.
-function pickImages(products: ProductListItem[], count: number, offset = 0): string[] {
-  const withThumbs = products.filter((p): p is ProductListItem & { thumbnail: string } => !!p.thumbnail)
-  if (withThumbs.length === 0) return []
-  return Array.from({ length: count }, (_, i) => withThumbs[(offset + i) % withThumbs.length].thumbnail)
-}
 
 export default async function HomePage() {
   const [products, homePage, faqItems, artistBio] = await Promise.all([
@@ -23,8 +14,6 @@ export default async function HomePage() {
     getFaqItems(),
     getArtistBio(),
   ])
-
-  const statsBackdrops = pickImages(products, 3, 5)
 
   return (
     <div>
@@ -41,17 +30,17 @@ export default async function HomePage() {
 
       <ArtworksCarousel products={products} />
 
-      <StatsScroller backdrops={statsBackdrops} />
+      {/* Stats section removed for now (kept on file — src/components/landing/StatsScroller.tsx — for later). */}
 
       <TeamSlider
         members={[
           {
             name: (artistBio?.name ?? "Hayden Andrews").split(" "),
             role: "Artist & Musician",
-            image: artistBio?.portrait ? urlForImage(artistBio.portrait).width(1200).url() : "",
+            image: artistBio?.portrait ? urlForImage(artistBio.portrait).width(1200).url() : "/team/hayden.jpg",
             bio:
               portableTextToPlainText(artistBio?.bio) ||
-              "A Gold Coast-based artist, musician, songwriter and educator whose work is inspired by connection, storytelling and the beauty found in everyday life. He personally creates, scans, prints and frames every piece himself.",
+              "Hayden Andrews, known artistically as HaydenGoSeek, is a Gold Coast-based artist, musician, songwriter and educator whose work is inspired by connection, storytelling and the beauty found in everyday life. Having written more than 800 songs, toured internationally and had music featured in film, television and advertising, Hayden brings the same creative depth to his visual art. He also teaches songwriting at HOTA and the Queensland Creative Academy. What makes his work unique is that he personally creates, scans, prints and frames his own artworks, offering collectors a rare opportunity to purchase pieces that have been crafted entirely under the vision and care of the original artist.",
           },
         ]}
       />

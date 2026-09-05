@@ -61,19 +61,47 @@ docker-compose.yml       Local Postgres + Redis for the Medusa backend.
   (`npm run dev` from the repo root).
 - **Storefront pages**: homepage, `/shop` (listing with category filter),
   and `/products/[handle]` (PDP), styled after teklafabrics.com's layout.
-  The homepage (2026-09-05 redesign) is composed from modules ported from
-  the `Claude-Agency-Website-Build` project's numbered module catalog —
-  hero, category grid, scroll-parallax gallery, about, FAQ, closing CTA —
-  restyled to this site's own warm-neutral palette, with Motion + Lenis
-  smooth-scroll scoped to a `(marketing)` route group
-  (`apps/storefront/src/app/(site)/(marketing)/`) so `/shop` and
-  `/products/[handle]` stay on plain native scroll, unanimated, as
-  before. Every text field pulls from Sanity (`homePage`, `artistBio`,
-  `faqItem`) with the real copy scraped from the current WordPress site as
-  the fallback, so it renders correctly today without a Sanity project
-  configured; product imagery pulls live from Medusa. Future content pages
-  (About, Contact) should live in that same `(marketing)` group to inherit
-  the same treatment.
+  The homepage (2026-09-05 redesign, iterated since) is composed from
+  modules ported from the `Claude-Agency-Website-Build` project's numbered
+  module catalog — see
+  `https://showcase.capote.design/examples/estate-agency` for the specific
+  reference page several sections were adapted from — restyled to this
+  site's own warm-neutral palette, with Motion + Lenis smooth-scroll scoped
+  to a `(marketing)` route group (`apps/storefront/src/app/(site)/(marketing)/`)
+  so `/shop` and `/products/[handle]` stay on plain native scroll,
+  unanimated, as before. Current section order:
+  1. **Hero** (`components/landing/HeroCinematic.tsx`, module 87) — a
+     six-beat scroll-scrubbed curtain reveal: real logo
+     (`public/logo-white.svg`), Hayden's real artwork photography as the
+     backdrop and reveal image (`public/hero/my-friends.jpg`,
+     `public/hero/weavings.jpg` — rotated 90° to landscape), a closing
+     frame over `public/hero/haydo-home.jpg` with a dark scrim + text
+     drop-shadow for legibility, then a light reveal panel with the real
+     WordPress "About" intro paragraph and a Shop Art CTA.
+  2. **The Collection** (`components/landing/ArtworksCarousel.tsx`, module
+     88 simplified) — a paginated carousel of square product thumbnails,
+     four per page, plus a row of real stat "honors" (songs written, years
+     framing, etc.).
+  3. ~~Stats column scroller~~ — removed from the page for now but kept on
+     file at `components/landing/StatsScroller.tsx` (module 89) for later;
+     not wired into `page.tsx`.
+  4. **The Artist** (`components/landing/TeamSlider.tsx`, module 94) —
+     Hayden's real bio and portrait (`public/team/hayden.jpg`), built to
+     support more people later via its `members` array, but just him for
+     now.
+  5. **FAQ** (`components/landing/Faq.tsx`, module 10) — all 17 real Q&As
+     from the WordPress site, with answers (the original homepage fetched
+     `faqItem` but never rendered the answer field — fixed as part of this
+     redesign).
+  6. **Contact** (`components/landing/ContactSection.tsx`, module 95) — a
+     presentational "Say g'day" statement form, no submit handler wired
+     yet.
+
+  Every text field pulls from Sanity (`homePage`, `artistBio`, `faqItem`)
+  with real copy as the fallback, so it renders correctly today without a
+  Sanity project configured; product imagery pulls live from Medusa.
+  Future content pages (About, Contact) should live in the same
+  `(marketing)` group to inherit the same treatment.
   PDP has a scrollable image gallery (thumbnails + prev/next + counter),
   Type/Size pills, Frame colour swatches (with a distinct diagonal-stripe
   "No frame" swatch), live price updates, and a working Add to Cart (creates
