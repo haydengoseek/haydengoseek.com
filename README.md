@@ -204,9 +204,12 @@ Both backend and storefront are live, as of 2026-09-05.
   - ~~Products seeded but draft~~ — **published 2026-09-05** with exact
     scraped pricing (see the pricing stub entry above for how). All 14 are
     live on `/store/products` and the storefront's `/shop`.
-  - **Admin dashboard is disabled in production** (`DISABLE_ADMIN=true`) —
-    see the gotcha below. Manage the store via `npm run dev`'s local admin
-    for now.
+  - ~~Admin dashboard disabled in production~~ — **fixed 2026-09-05**, see
+    the gotcha below. Live at
+    `https://backend-production-eae1.up.railway.app/app`. An invite was
+    sent to `markperic@gmail.com` to set up the first admin login — add
+    Hayden's own account from inside the admin (Settings → Users) once
+    he's ready, rather than re-inviting via CLI.
   - Real (live) Stripe keys still need to replace the test-mode
     `STRIPE_API_KEY` before actually taking payment — see the stubs list.
 - **Storefront → Vercel.** Project "storefront" under the `haydengoseek`
@@ -261,21 +264,22 @@ Both backend and storefront are live, as of 2026-09-05.
 - **Sanity** → Sanity's managed cloud (needs a project created — separate
   from Vercel/Railway, doesn't need Hayden's billing info, free tier is
   generous for a site this size).
-- **Admin dashboard gotcha (why it's disabled in production).** `medusa
-  build` compiles the admin dashboard's static files into
-  `.medusa/server/public/admin`, but `medusa start` run from the project
-  root (what a plain `npm run build && npm run start` Railway deploy does)
-  looks for them at `<cwd>/public/admin` instead and crash-loops with
-  "Could not find index.html in the admin build directory". The documented
-  fix is deploying from inside `.medusa/server` instead, but that didn't
-  work reliably on Railway here (the container couldn't find that directory
-  at the exact moment the start command ran, for reasons that didn't fully
-  resolve — see git history around 2026-09-05 for what was tried). Simplest
-  working fix: set `DISABLE_ADMIN=true` on the Railway backend service
-  (reads into `medusa-config.ts`'s `admin.disable`) so the server never
-  tries to serve it. Revisit properly hosting the admin dashboard
-  separately if Hayden needs to manage the store without a local dev
-  server running.
+- **Admin dashboard gotcha — fixed 2026-09-05.** `medusa build` compiles
+  the admin dashboard's static files into `.medusa/server/public/admin`,
+  but `medusa start` run from the project root (what a plain
+  `npm run build && npm run start` Railway deploy does) looks for them at
+  `<cwd>/public/admin` instead and crash-loops with "Could not find
+  index.html in the admin build directory". The docs' suggested fix
+  (deploying from inside `.medusa/server`, e.g. `cd .medusa/server && npm
+  run start`) didn't work reliably on Railway for reasons that never fully
+  resolved — the container couldn't find that directory at the exact
+  moment the start command ran despite it genuinely existing on disk
+  (confirmed with a diagnostic `ls`), and abandoning that approach in favor
+  of `DISABLE_ADMIN=true` was the first fix that shipped. The actual fix
+  needs no start-command changes at all: `apps/backend/package.json`'s
+  `build` script now copies `.medusa/server/public/admin` to
+  `./public/admin` right after `medusa build`, so plain `medusa start` from
+  the root finds it where it already expects to look.
 
 ## Data migration source
 
