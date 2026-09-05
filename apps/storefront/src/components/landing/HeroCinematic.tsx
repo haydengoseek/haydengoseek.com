@@ -59,7 +59,7 @@ export default function HeroCinematic({
   eyebrow = "Gold Coast, Australia",
   logoSrc = "/logo-white.svg",
   logoAlt = "HaydenGoSeek",
-  accent = "#6b7a5e",
+  accent = "#a8af93",
   zoomHeading = "Original artworks and museum-quality fine art prints by Hayden Andrews.",
   revealLabel = "About Hayden",
   revealStatement = "Original artworks, museum-quality fine art prints and handcrafted framing, all created under one roof by Hayden Andrews.",
