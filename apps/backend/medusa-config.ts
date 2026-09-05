@@ -3,14 +3,6 @@ import { loadEnv, defineConfig } from '@medusajs/framework/utils'
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 module.exports = defineConfig({
-  // Disabled in production via DISABLE_ADMIN: `medusa start` from the
-  // project root only finds the admin build's index.html when run from
-  // .medusa/server (the actual medusa build output dir), which broke the
-  // Railway deploy. Manage the store via `npm run dev`'s admin locally for
-  // now instead of fighting that path — revisit hosting admin properly later.
-  admin: {
-    disable: process.env.DISABLE_ADMIN === "true",
-  },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL,
