@@ -61,6 +61,19 @@ docker-compose.yml       Local Postgres + Redis for the Medusa backend.
   (`npm run dev` from the repo root).
 - **Storefront pages**: homepage, `/shop` (listing with category filter),
   and `/products/[handle]` (PDP), styled after teklafabrics.com's layout.
+  The homepage (2026-09-05 redesign) is composed from modules ported from
+  the `Claude-Agency-Website-Build` project's numbered module catalog —
+  hero, category grid, scroll-parallax gallery, about, FAQ, closing CTA —
+  restyled to this site's own warm-neutral palette, with Motion + Lenis
+  smooth-scroll scoped to a `(marketing)` route group
+  (`apps/storefront/src/app/(site)/(marketing)/`) so `/shop` and
+  `/products/[handle]` stay on plain native scroll, unanimated, as
+  before. Every text field pulls from Sanity (`homePage`, `artistBio`,
+  `faqItem`) with the real copy scraped from the current WordPress site as
+  the fallback, so it renders correctly today without a Sanity project
+  configured; product imagery pulls live from Medusa. Future content pages
+  (About, Contact) should live in that same `(marketing)` group to inherit
+  the same treatment.
   PDP has a scrollable image gallery (thumbnails + prev/next + counter),
   Type/Size pills, Frame colour swatches (with a distinct diagonal-stripe
   "No frame" swatch), live price updates, and a working Add to Cart (creates
