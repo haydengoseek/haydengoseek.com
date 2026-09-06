@@ -2,9 +2,11 @@ import Link from "next/link"
 import { getCartItemCount } from "@/lib/cart-actions"
 
 const NAV_LINKS = [
+  { label: "Home", href: "/" },
   { label: "Shop", href: "/shop" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "About", href: "/#about" },
+  { label: "FAQs", href: "/#faq" },
+  { label: "Contact", href: "/#contact" },
 ]
 
 export default async function Header() {

@@ -38,7 +38,7 @@ export default function TeamSlider({ eyebrow = "The artist", members = DEFAULT_T
   const member = members[index]
 
   return (
-    <section className="relative border-t border-line bg-bg">
+    <section id="about" className="relative scroll-mt-24 border-t border-line bg-bg">
       <div className="grid min-h-screen lg:grid-cols-2">
         {/* Portrait half */}
         <div className="relative min-h-[52vh] overflow-hidden bg-surface lg:min-h-screen">
@@ -67,7 +67,7 @@ export default function TeamSlider({ eyebrow = "The artist", members = DEFAULT_T
           <div className="py-12">
             <AnimatePresence custom={direction} initial={false} mode="popLayout">
               <motion.div key={index} custom={direction} variants={slide} initial="enter" animate="center" exit="exit" transition={{ duration: 0.9, ease: EASE }}>
-                <h3 className="text-[clamp(2.25rem,5vw,4.25rem)] tracking-[-0.02em] text-ink">
+                <h3 className="text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.05] tracking-[-0.02em] text-ink">
                   {member.name.map((part) => (
                     <span key={part} className="block">
                       {part}

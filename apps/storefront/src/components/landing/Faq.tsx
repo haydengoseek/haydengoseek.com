@@ -77,7 +77,7 @@ export default function Faq({
   if (items.length === 0) return null
 
   return (
-    <section id="faq" className="border-t border-line px-4 py-20 sm:px-8 sm:py-28">
+    <section id="faq" className="scroll-mt-24 border-t border-line px-4 py-20 sm:px-8 sm:py-28">
       <div className="mx-auto max-w-2xl">
         <ScrollReveal effect="A" as="h2" className="text-3xl tracking-tight text-ink">
           {heading}

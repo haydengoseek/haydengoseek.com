@@ -17,8 +17,8 @@ const FIELDS = [
 export default function ContactSection({
   id = "contact",
   eyebrow = "Say g'day",
-  lines = ["Say", "g'day,", "let's chat"],
-  note = "Hayden will get back to you personally, usually within a few days.",
+  lines = ["Say g'day,", "let's chat"],
+  note = "Hayden will get back to you personally, within 24 hours.",
   directEmail = "info@haydengoseek.com",
   studioAddress = "10 Ferry Road, Southport QLD",
 }: {
@@ -30,7 +30,7 @@ export default function ContactSection({
   studioAddress?: string
 }) {
   return (
-    <section id={id} className="border-t border-line bg-bg py-20 md:py-28">
+    <section id={id} className="scroll-mt-24 border-t border-line bg-bg py-20 md:py-28">
       <div className="mx-auto max-w-[1600px] px-4 sm:px-8">
         <ScrollReveal>
           <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted">{eyebrow}</p>
@@ -38,8 +38,8 @@ export default function ContactSection({
 
         <h2 className="mt-8">
           {lines.map((line) => (
-            <ScrollReveal as="span" key={line} className="block overflow-hidden">
-              <span className="block text-[clamp(2.25rem,7.4vw,6.5rem)] tracking-[-0.02em] text-ink">{line}</span>
+            <ScrollReveal as="span" key={line} className="block overflow-hidden pb-2">
+              <span className="block text-[clamp(1.75rem,4.4vw,3.75rem)] leading-[1.15] tracking-[-0.02em] text-ink">{line}</span>
             </ScrollReveal>
           ))}
         </h2>

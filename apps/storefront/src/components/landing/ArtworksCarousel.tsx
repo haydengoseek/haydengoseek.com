@@ -8,15 +8,6 @@ import { ScrollReveal } from "@/lib/motion-variants"
 import type { ProductListItem } from "@/lib/medusa"
 import { formatPriceRange } from "@/lib/format"
 
-type Honor = [string, string]
-
-const DEFAULT_HONORS: Honor[] = [
-  ["800+", "Songs written across a career in music"],
-  ["18+", "Years spent framing artwork by hand"],
-  ["14", "Original one-of-one artworks available now"],
-  ["1", "Artist doing every step, start to finish"],
-]
-
 const PER_PAGE = 4
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -34,12 +25,10 @@ export default function ArtworksCarousel({
   eyebrow = "The collection",
   title = "Welcome to the creative world of HaydenGoSeek.",
   products,
-  honors = DEFAULT_HONORS,
 }: {
   eyebrow?: string
   title?: string
   products: ProductListItem[]
-  honors?: Honor[]
 }) {
   const [[page, direction], setPage] = useState<[number, number]>([0, 1])
   const totalPages = Math.ceil(products.length / PER_PAGE)
@@ -116,18 +105,6 @@ export default function ArtworksCarousel({
             </div>
           </div>
         )}
-
-        {/* Honors */}
-        <div className="mt-20">
-          <ul className="grid gap-x-8 gap-y-10 border-t border-line pt-10 sm:grid-cols-2 lg:grid-cols-4">
-            {honors.map(([figure, note]) => (
-              <ScrollReveal as="li" key={figure}>
-                <p className="text-[clamp(2rem,3.4vw,3rem)] tracking-[-0.02em] text-ink">{figure}</p>
-                <p className="mt-3 max-w-[28ch] text-sm leading-snug text-muted">{note}</p>
-              </ScrollReveal>
-            ))}
-          </ul>
-        </div>
       </div>
     </section>
   )
