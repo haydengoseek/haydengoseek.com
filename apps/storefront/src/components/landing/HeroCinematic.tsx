@@ -15,11 +15,19 @@ type Images = {
 
 /**
  * The second logo appearance: traces the wordmark's outline then fades the
- * fill in over the tail of the trace, holds, then fades out as a group
- * before the rectangle reveal below takes the centre of the frame — all
- * driven by scroll rather than time. Needs the raw path data (logoPath.ts)
- * rather than an <img> — stroke-drawing an SVG requires direct access to
- * its <path>, which an <img> tag doesn't expose.
+ * fill in over the tail of the trace, holds through the rectangle reveal
+ * that follows, then fades out as the closing (Hayden's-photo) beat scales
+ * up — all driven by scroll rather than time. Needs the raw path data
+ * (logoPath.ts) rather than an <img> — stroke-drawing an SVG requires
+ * direct access to its <path>, which an <img> tag doesn't expose.
+ *
+ * The trace doesn't start at a fixed scroll position — it starts once the
+ * curtain (the caller's own scaleX wipe, `curtainWipeRange`) has widened
+ * enough to actually fit the logo, measured against its real rendered
+ * width rather than assumed. `curtainWipeRange` mirrors that same
+ * [startProgress, endProgress, startScaleX, endScaleX] the curtain itself
+ * uses, so this can invert it to find the progress at which scaleX ×
+ * viewport width ≥ logo width.
  *
  * Drives stroke-dasharray/dashoffset imperatively off a measured
  * getTotalLength(), via a direct DOM write on every scroll update, rather
@@ -29,10 +37,24 @@ type Images = {
  * caching specific to SVG stroke-drawing attributes on `motion.path`).
  * Reading and writing the attributes by hand sidesteps whatever that is.
  */
-function TracedLogo({ progress, className }: { progress: MotionValue<number>; className?: string }) {
+function TracedLogo({
+  progress,
+  className,
+  curtainWipeRange,
+  holdEnd,
+  fadeOutRange,
+}: {
+  progress: MotionValue<number>
+  className?: string
+  curtainWipeRange: [number, number, number, number]
+  holdEnd: number
+  fadeOutRange: [number, number]
+}) {
+  const svgRef = useRef<SVGSVGElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
   const lengthRef = useRef(0)
   const [length, setLength] = useState(0)
+  const [traceStart, setTraceStart] = useState(curtainWipeRange[0])
 
   useEffect(() => {
     if (pathRef.current) {
@@ -40,22 +62,37 @@ function TracedLogo({ progress, className }: { progress: MotionValue<number>; cl
       lengthRef.current = measured
       setLength(measured)
     }
+
+    const [startProgress, endProgress, startScaleX, endScaleX] = curtainWipeRange
+    function computeTraceStart() {
+      if (!svgRef.current) return
+      const logoWidth = svgRef.current.getBoundingClientRect().width
+      const requiredScaleX = logoWidth / window.innerWidth
+      const t = Math.min(1, Math.max(0, (requiredScaleX - startScaleX) / (endScaleX - startScaleX)))
+      setTraceStart(startProgress + t * (endProgress - startProgress))
+    }
+    computeTraceStart()
+    window.addEventListener("resize", computeTraceStart)
+    return () => window.removeEventListener("resize", computeTraceStart)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const traceEnd = traceStart + 0.06
 
   // Reads lengthRef (not the `length` state) so this stays correct even if
   // Motion only binds this listener once with the closure from that first
   // render, before the length measurement above has landed.
   useMotionValueEvent(progress, "change", (v) => {
     if (!pathRef.current || lengthRef.current === 0) return
-    const t = Math.min(1, Math.max(0, (v - 0.28) / (0.34 - 0.28)))
+    const t = Math.min(1, Math.max(0, (v - traceStart) / (traceEnd - traceStart)))
     pathRef.current.style.strokeDashoffset = String(lengthRef.current * (1 - t))
   })
 
-  const fillOpacity = useScrollValue(progress, [0.33, 0.37], [0, 1])
-  const groupOpacity = useScrollValue(progress, [0.385, 0.4], [1, 0])
+  const fillOpacity = useScrollValue(progress, [traceStart + 0.05, Math.min(traceStart + 0.09, holdEnd)], [0, 1])
+  const groupOpacity = useScrollValue(progress, fadeOutRange, [1, 0])
 
   return (
-    <motion.svg viewBox={LOGO_VIEWBOX} className={className} fill="none" style={{ opacity: groupOpacity }}>
+    <motion.svg ref={svgRef} viewBox={LOGO_VIEWBOX} className={className} fill="none" style={{ opacity: groupOpacity }}>
       <motion.path d={LOGO_PATH} fill="white" style={{ opacity: fillOpacity }} />
       <path
         ref={pathRef}
@@ -148,9 +185,16 @@ export default function HeroCinematic({
   const titleOpacity = useScrollValue(scrollYProgress, [0.12, 0.22], [1, 0])
 
   // Beat 3 — the curtain: draws out of the centre as a hairline, then wipes
-  // outward to flood the frame.
+  // outward to flood the frame. CURTAIN_WIPE_RANGE is shared with the
+  // second logo below, which inverts it to find when the curtain is wide
+  // enough to fit the logo — keep them in sync.
   const curtainDraw = useTransform(scrollYProgress, [0.05, 0.19], [0, 1])
-  const curtainWipe = useTransform(scrollYProgress, [0.28, 0.38], [0.006, 1])
+  const CURTAIN_WIPE_RANGE: [number, number, number, number] = [0.28, 0.38, 0.006, 1]
+  const curtainWipe = useTransform(
+    scrollYProgress,
+    [CURTAIN_WIPE_RANGE[0], CURTAIN_WIPE_RANGE[1]],
+    [CURTAIN_WIPE_RANGE[2], CURTAIN_WIPE_RANGE[3]]
+  )
 
   // Beat 4 — a rectangle clip opening from the centre.
   const insetPct = useTransform(scrollYProgress, [0.4, 0.52], [50, 0])
@@ -194,9 +238,17 @@ export default function HeroCinematic({
           className="absolute inset-0 origin-center"
         />
 
-        {/* Beat 3.5 — second logo, traced then filled on the flooded curtain */}
+        {/* Beat 3.5 — second logo, traced then filled on the flooded curtain.
+            Starts once the curtain is wide enough to fit it, holds through
+            the rectangle reveal below, fades out as the closing beat scales up. */}
         <div className="absolute inset-0 flex items-center justify-center px-7 md:px-6">
-          <TracedLogo progress={scrollYProgress} className="w-[min(70vw,24rem)]" />
+          <TracedLogo
+            progress={scrollYProgress}
+            className="w-[min(85vw,34rem)]"
+            curtainWipeRange={CURTAIN_WIPE_RANGE}
+            holdEnd={0.52}
+            fadeOutRange={[0.54, 0.6]}
+          />
         </div>
 
         {/* Beat 4 — clip reveal */}
