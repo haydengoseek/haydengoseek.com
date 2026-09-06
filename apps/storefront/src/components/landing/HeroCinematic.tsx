@@ -1,15 +1,72 @@
 "use client"
 
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, useScroll, useTransform, useMotionTemplate, type MotionValue } from "motion/react"
+import { motion, useScroll, useTransform, useMotionTemplate, useMotionValueEvent, type MotionValue } from "motion/react"
 import { useScrollValue } from "@/lib/motion-variants"
+import { LOGO_PATH, LOGO_VIEWBOX } from "@/lib/logoPath"
 
 type Images = {
   backdrop: string
   insetReveal: string
   closing: string
+}
+
+/**
+ * The second logo appearance: traces the wordmark's outline then fades the
+ * fill in over the tail of the trace, holds, then fades out as a group
+ * before the rectangle reveal below takes the centre of the frame — all
+ * driven by scroll rather than time. Needs the raw path data (logoPath.ts)
+ * rather than an <img> — stroke-drawing an SVG requires direct access to
+ * its <path>, which an <img> tag doesn't expose.
+ *
+ * Drives stroke-dasharray/dashoffset imperatively off a measured
+ * getTotalLength(), via a direct DOM write on every scroll update, rather
+ * than Motion's `pathLength` prop or a reactive `style` binding — both
+ * left stroke-dasharray/dashoffset frozen at their initial values through
+ * the whole scroll range in this Motion version/setup (some internal
+ * caching specific to SVG stroke-drawing attributes on `motion.path`).
+ * Reading and writing the attributes by hand sidesteps whatever that is.
+ */
+function TracedLogo({ progress, className }: { progress: MotionValue<number>; className?: string }) {
+  const pathRef = useRef<SVGPathElement>(null)
+  const lengthRef = useRef(0)
+  const [length, setLength] = useState(0)
+
+  useEffect(() => {
+    if (pathRef.current) {
+      const measured = pathRef.current.getTotalLength()
+      lengthRef.current = measured
+      setLength(measured)
+    }
+  }, [])
+
+  // Reads lengthRef (not the `length` state) so this stays correct even if
+  // Motion only binds this listener once with the closure from that first
+  // render, before the length measurement above has landed.
+  useMotionValueEvent(progress, "change", (v) => {
+    if (!pathRef.current || lengthRef.current === 0) return
+    const t = Math.min(1, Math.max(0, (v - 0.28) / (0.34 - 0.28)))
+    pathRef.current.style.strokeDashoffset = String(lengthRef.current * (1 - t))
+  })
+
+  const fillOpacity = useScrollValue(progress, [0.33, 0.37], [0, 1])
+  const groupOpacity = useScrollValue(progress, [0.385, 0.4], [1, 0])
+
+  return (
+    <motion.svg viewBox={LOGO_VIEWBOX} className={className} fill="none" style={{ opacity: groupOpacity }}>
+      <motion.path d={LOGO_PATH} fill="white" style={{ opacity: fillOpacity }} />
+      <path
+        ref={pathRef}
+        d={LOGO_PATH}
+        fill="none"
+        stroke="white"
+        strokeWidth={6}
+        style={{ strokeDasharray: length, strokeDashoffset: length }}
+      />
+    </motion.svg>
+  )
 }
 
 /**
@@ -62,8 +119,6 @@ export default function HeroCinematic({
   eyebrow = "Gold Coast, Australia",
   logoSrc = "/logo-white.svg",
   logoAlt = "HaydenGoSeek",
-  secondaryLogoSrc = "/logo-beige.svg",
-  secondaryLogoAlt = "HaydenGoSeek",
   accent = "#a8af93",
   zoomHeading = "Original artworks and museum-quality fine art prints by Hayden Andrews.",
   revealLabel = "About Hayden",
@@ -75,8 +130,6 @@ export default function HeroCinematic({
   eyebrow?: string
   logoSrc?: string
   logoAlt?: string
-  secondaryLogoSrc?: string
-  secondaryLogoAlt?: string
   accent?: string
   zoomHeading?: string
   revealLabel?: string
@@ -98,15 +151,6 @@ export default function HeroCinematic({
   // outward to flood the frame.
   const curtainDraw = useTransform(scrollYProgress, [0.05, 0.19], [0, 1])
   const curtainWipe = useTransform(scrollYProgress, [0.28, 0.38], [0.006, 1])
-
-  // Beat 3.5 — once the curtain has fully flooded the frame, a second logo
-  // (a different colourway) irises in from the centre, holds a moment, then
-  // irises back out before the rectangle reveal below takes over the centre
-  // of the frame — self-contained inside the curtain's own hold window so it
-  // never competes with that reveal for space.
-  const irisRadius = useTransform(scrollYProgress, [0.28, 0.33, 0.36, 0.4], [0, 70, 70, 0])
-  const irisClip = useMotionTemplate`circle(${irisRadius}% at 50% 50%)`
-  const irisScale = useTransform(scrollYProgress, [0.28, 0.33, 0.36, 0.4], [0.9, 1, 1, 0.9])
 
   // Beat 4 — a rectangle clip opening from the centre.
   const insetPct = useTransform(scrollYProgress, [0.4, 0.52], [50, 0])
@@ -150,15 +194,10 @@ export default function HeroCinematic({
           className="absolute inset-0 origin-center"
         />
 
-        {/* Beat 3.5 — second logo, iris reveal on the flooded curtain */}
-        <motion.div style={{ clipPath: irisClip }} className="absolute inset-0 flex items-center justify-center px-7 md:px-6">
-          <motion.img
-            src={secondaryLogoSrc}
-            alt={secondaryLogoAlt}
-            style={{ scale: irisScale }}
-            className="w-[min(70vw,24rem)]"
-          />
-        </motion.div>
+        {/* Beat 3.5 — second logo, traced then filled on the flooded curtain */}
+        <div className="absolute inset-0 flex items-center justify-center px-7 md:px-6">
+          <TracedLogo progress={scrollYProgress} className="w-[min(70vw,24rem)]" />
+        </div>
 
         {/* Beat 4 — clip reveal */}
         <motion.div style={{ clipPath: insetClip }} className="absolute inset-0">
