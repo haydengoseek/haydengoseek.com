@@ -23,7 +23,7 @@ export default async function HomePage() {
         revealStatement={homePage?.subheading ?? undefined}
         images={{
           backdrop: "/hero/my-friends.jpg",
-          insetReveal: "/hero/weavings.jpg",
+          insetReveal: "/hero/fossil.jpg",
           closing: "/hero/haydo-home.jpg",
         }}
       />
