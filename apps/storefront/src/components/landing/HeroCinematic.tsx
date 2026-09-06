@@ -62,6 +62,8 @@ export default function HeroCinematic({
   eyebrow = "Gold Coast, Australia",
   logoSrc = "/logo-white.svg",
   logoAlt = "HaydenGoSeek",
+  secondaryLogoSrc = "/logo-beige.svg",
+  secondaryLogoAlt = "HaydenGoSeek",
   accent = "#a8af93",
   zoomHeading = "Original artworks and museum-quality fine art prints by Hayden Andrews.",
   revealLabel = "About Hayden",
@@ -73,6 +75,8 @@ export default function HeroCinematic({
   eyebrow?: string
   logoSrc?: string
   logoAlt?: string
+  secondaryLogoSrc?: string
+  secondaryLogoAlt?: string
   accent?: string
   zoomHeading?: string
   revealLabel?: string
@@ -94,6 +98,15 @@ export default function HeroCinematic({
   // outward to flood the frame.
   const curtainDraw = useTransform(scrollYProgress, [0.05, 0.19], [0, 1])
   const curtainWipe = useTransform(scrollYProgress, [0.28, 0.38], [0.006, 1])
+
+  // Beat 3.5 — once the curtain has fully flooded the frame, a second logo
+  // (a different colourway) irises in from the centre, holds a moment, then
+  // irises back out before the rectangle reveal below takes over the centre
+  // of the frame — self-contained inside the curtain's own hold window so it
+  // never competes with that reveal for space.
+  const irisRadius = useTransform(scrollYProgress, [0.28, 0.33, 0.36, 0.4], [0, 70, 70, 0])
+  const irisClip = useMotionTemplate`circle(${irisRadius}% at 50% 50%)`
+  const irisScale = useTransform(scrollYProgress, [0.28, 0.33, 0.36, 0.4], [0.9, 1, 1, 0.9])
 
   // Beat 4 — a rectangle clip opening from the centre.
   const insetPct = useTransform(scrollYProgress, [0.4, 0.52], [50, 0])
@@ -136,6 +149,16 @@ export default function HeroCinematic({
           style={{ scaleX: curtainWipe, scaleY: curtainDraw, backgroundColor: accent }}
           className="absolute inset-0 origin-center"
         />
+
+        {/* Beat 3.5 — second logo, iris reveal on the flooded curtain */}
+        <motion.div style={{ clipPath: irisClip }} className="absolute inset-0 flex items-center justify-center px-7 md:px-6">
+          <motion.img
+            src={secondaryLogoSrc}
+            alt={secondaryLogoAlt}
+            style={{ scale: irisScale }}
+            className="w-[min(70vw,24rem)]"
+          />
+        </motion.div>
 
         {/* Beat 4 — clip reveal */}
         <motion.div style={{ clipPath: insetClip }} className="absolute inset-0">
