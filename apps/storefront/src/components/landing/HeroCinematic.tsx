@@ -133,7 +133,7 @@ function ClosingFrame({
       <div className="absolute inset-0 flex items-center justify-center px-6">
         <motion.p
           style={{ opacity: headingOpacity }}
-          className="max-w-[30ch] text-center text-[clamp(1.25rem,3.6vw,3rem)] leading-[1.2] tracking-[-0.01em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.65)]"
+          className="font-serif max-w-[30ch] text-center text-[clamp(1.25rem,3.6vw,3rem)] leading-[1.2] tracking-[-0.01em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.65)]"
         >
           {heading}
         </motion.p>
