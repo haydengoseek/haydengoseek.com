@@ -100,6 +100,7 @@ type RawListProduct = {
   handle: string
   thumbnail: string | null
   variants?: RawListVariant[]
+  metadata?: Record<string, unknown> | null
 }
 
 type RawDetailVariant = {
@@ -160,9 +161,20 @@ export type ProductListItem = {
   thumbnail: string | null
   priceRange: { min: number; max: number }
   variantCount: number
+  displayOrder: number | null
 }
 
-const LIST_FIELDS = "id,title,handle,thumbnail,*variants.calculated_price,*categories"
+const LIST_FIELDS = "id,title,handle,thumbnail,metadata,*variants.calculated_price,*categories"
+
+// Manual sort order, set per-product via the "display_order" key in the
+// admin's Metadata editor (Medusa's core Product model has no built-in
+// manual-sort field). Lower numbers show first; products without one keep
+// their relative order and sort after every product that has one set.
+function displayOrderOf(p: RawListProduct): number | null {
+  const raw = p.metadata?.display_order
+  const n = typeof raw === "string" ? Number(raw) : raw
+  return typeof n === "number" && Number.isFinite(n) ? n : null
+}
 
 function toListItem(p: RawListProduct): ProductListItem {
   const amounts = (p.variants ?? []).map((v) => v.calculated_price?.calculated_amount ?? 0)
@@ -173,6 +185,7 @@ function toListItem(p: RawListProduct): ProductListItem {
     thumbnail: p.thumbnail,
     priceRange: { min: Math.min(...amounts), max: Math.max(...amounts) },
     variantCount: p.variants?.length ?? 0,
+    displayOrder: displayOrderOf(p),
   }
 }
 
@@ -195,7 +208,19 @@ export async function listProducts(opts?: { categoryHandle?: string }): Promise<
     ...(categoryId ? { category_id: [categoryId] } : {}),
   })
 
-  return (products as unknown as RawListProduct[]).map(toListItem)
+  const items = (products as unknown as RawListProduct[]).map(toListItem)
+
+  // Stable sort: items with a display_order come first (ascending), items
+  // without one keep their original relative order after those.
+  return items
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => {
+      if (a.item.displayOrder !== null && b.item.displayOrder !== null) return a.item.displayOrder - b.item.displayOrder
+      if (a.item.displayOrder !== null) return -1
+      if (b.item.displayOrder !== null) return 1
+      return a.index - b.index
+    })
+    .map(({ item }) => item)
 }
 
 // ---- Product detail ----
