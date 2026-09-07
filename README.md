@@ -4,28 +4,60 @@ Rebuild of haydengoseek.com (currently WordPress/WooCommerce) on Next.js +
 Tailwind (storefront) / Sanity (editorial content) / Medusa (commerce) /
 Stripe (payments).
 
-## 🚀 Live — both backend and storefront deployed
+## 🚀 Live — custom domain, CMS, blog all live
 
-Both the backend and storefront are now deployed to Hayden's own Railway
-and Vercel accounts, as of 2026-09-05:
+- **Site**: [haydengoseek.com](https://haydengoseek.com) — live since
+  2026-09-07 (DNS cut over to Cloudflare → Vercel; see "Custom domain & DNS"
+  below). Also reachable at
+  `https://storefront-three-ochre.vercel.app` (Vercel project "storefront"
+  under the `haydengoseek` team).
 - **Backend**: `https://backend-production-eae1.up.railway.app` (Railway
   project "haydengoseek" — Postgres, Redis, backend services; volume
-  attached for images; migrations run; 14 products seeded).
-- **Storefront**: `https://storefront-three-ochre.vercel.app` (Vercel
-  project "storefront" under the `haydengoseek` team).
+  attached for images; migrations run; 14 products seeded). Admin dashboard
+  at `/app` — see "Medusa admin access" below.
+- **Sanity CMS**: real project (`vy869vh5`, "HaydenGoSeek") created
+  2026-09-07 — header, footer, hero, FAQ, contact, and a new blog are all
+  editable from Studio (`/studio` on the storefront), pre-seeded with the
+  site's real copy. See "Sanity CMS" below.
 
-**Still open before this is customer-ready:**
-1. ~~Fix placeholder pricing~~ — done 2026-09-05. All 14 products are
-   **live and published** with exact per-variation prices, scraped
-   directly from the WooCommerce product pages rather than waiting on a
-   CSV export. See "Deployment — current status" below for how.
-2. **`STRIPE_WEBHOOK_SECRET` isn't set on the backend yet** — creating a
+**Still open before this is fully customer-ready:**
+1. **`STRIPE_WEBHOOK_SECRET` isn't set on the backend yet** — creating a
    Stripe webhook endpoint needs to be done manually via the Stripe
    Dashboard (an agent session can't do this — it's treated as a sensitive
    account change). See "Deployment — current status" for the exact URL/
    events to configure.
-3. Real (live) Stripe keys, a real Sanity project, and the cart/checkout
-   UI are still stubs — see the full list below.
+2. Real (live) Stripe keys and the cart/checkout UI are still stubs — see
+   the full list below.
+3. Custom email for the domain — deliberately left on Hostinger for now
+   (Hayden's decision, 2026-09-07); MX/SPF/DKIM/DMARC all preserved
+   untouched through the DNS cutover. Zoho Mail's free tier was the
+   recommended path if this ever needs to move off Hostinger.
+
+## Picking this up on a different machine
+
+Everything that matters is already durable — committed to git, or living in
+Railway/Vercel/Sanity's own cloud (not this machine). Two things are
+genuinely per-machine and need redoing on a new one:
+
+1. **CLI logins.** `railway`, `vercel`, and `sanity` CLIs are all
+   authenticated locally (`~/.railway`, `~/Library/Application
+   Support/com.vercel.cli`, Sanity's own global config) — none of that
+   transfers. Re-authenticate with `npx @railway/cli login`, `npx vercel
+   login`, `npx sanity login` (all browser-based device-flow; driving them
+   through an already-logged-in Chrome session works fine, see
+   `feedback_chrome_cli_oauth` if using Claude Code). Railway/Vercel logins
+   are Hayden's own accounts (`haydengoseek@gmail.com`); Sanity is Mark's.
+2. **`.env` files** (gitignored, per app). Copy `apps/storefront/.env.example`
+   → `.env` — it already has the real Sanity project ID filled in. Backend
+   needs `apps/backend/.env` set up per its own `.env.example` (Stripe test
+   key, DB/Redis connection for local Docker).
+
+Everything else — schema, seeded Sanity content, deployed code, DNS,
+Medusa admin login — is already live and doesn't depend on this machine.
+One deploy gotcha worth knowing before pushing more changes: **this Vercel
+project has no GitHub auto-deploy connected**, so `git push` alone does not
+deploy — run `vercel --prod` from `apps/storefront` explicitly after
+pushing (see "Deployment — current status").
 
 ## Structure
 
@@ -97,11 +129,13 @@ docker-compose.yml       Local Postgres + Redis for the Medusa backend.
      presentational "Say g'day" statement form, no submit handler wired
      yet.
 
-  Every text field pulls from Sanity (`homePage`, `artistBio`, `faqItem`)
-  with real copy as the fallback, so it renders correctly today without a
-  Sanity project configured; product imagery pulls live from Medusa.
-  Future content pages (About, Contact) should live in the same
-  `(marketing)` group to inherit the same treatment.
+  Every text field pulls from Sanity (`homePage`, `artistBio`, `faqItem`,
+  `siteSettings`) with the exact real current copy as the fallback (see
+  "Sanity CMS" below), so nothing regresses if a field is ever left blank.
+  Header/footer nav, announcement bar, and footer columns are now Sanity-
+  driven too. `/blog` and `/blog/[slug]` (new, 2026-09-07) and the generic
+  `/about`, `/contact`, `/shipping-returns` pages all live in the same
+  `(marketing)` group to inherit the Motion/Lenis treatment.
   PDP has a scrollable image gallery (thumbnails + prev/next + counter),
   Type/Size pills, Frame colour swatches (with a distinct diagonal-stripe
   "No frame" swatch), live price updates, and a working Add to Cart (creates
@@ -120,12 +154,28 @@ docker-compose.yml       Local Postgres + Redis for the Medusa backend.
   every real Type×Frame combination for all 14 products with zero mismatches.
   The Original is always shown via its own dedicated photo, and the shop
   grid consistently thumbnails every product with that same Original shot.
-- Sanity schema: `homePage`, `artwork`, `faqItem`, `artistBio`,
-  `siteSettings`, `page`. Embedded Studio at `/studio` on the storefront —
-  no real Sanity project linked yet (see stubs below), so the site currently
-  renders sensible fallback copy instead of Sanity content.
-- Git repo initialized locally with one commit (see git log). Not pushed to
-  a remote yet.
+- **Sanity CMS — real project, fully wired, 2026-09-07.** Schema:
+  `homePage` (hero/carousel/team/faq/contact, reworked to match the actual
+  live components), `siteSettings` (nav, announcement bar, footer columns,
+  newsletter, social), `artistBio` (+ `role` field), `faqItem` (17 real
+  Q&As), `page` (generic — powers `/about`, `/contact`,
+  `/shipping-returns`), `blogPost` (new), `artwork` (per-product editorial
+  overlay — schema exists, not yet wired into the PDP). Embedded Studio at
+  `/studio`. Seeded with the site's real current copy via
+  `apps/storefront/scripts/seed-sanity-content.ts` (`npx sanity exec
+  scripts/seed-sanity-content.ts --with-user-token`, idempotent — safe to
+  re-run). See "Sanity CMS" under Deployment for project details, CORS,
+  and env vars.
+- **Product display order** — Medusa's core Product model has no built-in
+  manual-sort field, so `apps/storefront/src/lib/medusa.ts`'s
+  `listProducts()` sorts by an optional `display_order` number set per
+  product in the admin's Metadata editor instead (lower first; products
+  without one keep their existing order, after any that have it set).
+- Git repo pushed to `https://github.com/haydengoseek/haydengoseek.com`
+  (main branch). **Note: this Vercel project has no GitHub auto-deploy
+  connected** (`vercel git connect` was never run) — pushing to GitHub does
+  *not* trigger a production deploy on its own. Deploy explicitly with
+  `vercel --prod` from `apps/storefront` after pushing.
 
 **Deliberately stubbed — needs real input before this goes further:**
 - ~~Pricing is a placeholder~~ — **fixed 2026-09-05.** The public
@@ -144,20 +194,21 @@ docker-compose.yml       Local Postgres + Redis for the Medusa backend.
   WordPress site before it's decommissioned.
 - **Shipping rates are a placeholder** ($25 flat) — need Hayden's actual
   domestic/international rates.
-- **No real Sanity project yet** — creating one needs a sanity.io login
-  (`npx sanity login` from `apps/studio`, or via sanity.io/manage), then set
-  `NEXT_PUBLIC_SANITY_PROJECT_ID` in both `apps/storefront/.env` and
-  `apps/studio/.env`. No editorial content (bio, FAQ, homepage copy) has
-  been written into Sanity yet — the site currently falls back to
-  reasonable hardcoded copy.
 - **Stripe is in test mode** — real (live) keys need to go in before
   actually taking payment from customers.
+- **`STRIPE_WEBHOOK_SECRET` still not set on the Railway backend** — manual
+  Stripe Dashboard step, see "Deployment — current status".
 - **Cart/checkout pages aren't built** — Add to Cart works end-to-end at the
   data layer, but there's no `/cart` or `/checkout` page UI yet to view or
   complete an order from the storefront itself (the Stripe/Medusa flow was
   proven directly against the API, not through a UI).
-- **About/Contact pages** are linked in the nav/footer but not built.
-- **Not deployed** — see the pause note at the top of this file.
+- **`/about`, `/contact`, `/shipping-returns`** are real, live, Sanity-backed
+  pages now (2026-09-07) but seeded with brief starter copy — worth having
+  Hayden expand them in Studio.
+- **`artwork` Sanity document type** (per-product editorial story/gallery)
+  exists in the schema but isn't wired into the PDP (`/products/[handle]`)
+  yet — product pages are still 100% Medusa-driven, per Mark's call to keep
+  shop content on Medusa rather than split it across two systems.
 
 ## Images
 
@@ -210,6 +261,14 @@ The seed script prints a new publishable API key every time it runs (each
 reseed creates a fresh one) — copy it into
 `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY` in `apps/storefront/.env` and restart
 the storefront.
+
+**Sanity, on a fresh checkout/machine**: `apps/storefront/.env` is
+gitignored, so copy `.env.example` → `.env` and it'll already have the real
+`NEXT_PUBLIC_SANITY_PROJECT_ID` (`vy869vh5`) filled in — `sanity.cli.ts` (committed)
+has the same ID hardcoded for CLI use. The Sanity CLI itself
+(`npx sanity ...` from `apps/storefront`) needs its own login on a new
+machine — `npx sanity login`, browser-based — before commands like `sanity
+exec`, `sanity cors`, or re-running the seed script will work there.
 
 Ports are intentionally offset from this developer's other local projects to
 avoid collisions: Postgres on `5434`, Redis on `6381` (see
@@ -321,6 +380,82 @@ Both backend and storefront are live, as of 2026-09-05.
   `build` script now copies `.medusa/server/public/admin` to
   `./public/admin` right after `medusa build`, so plain `medusa start` from
   the root finds it where it already expects to look.
+- **Medusa admin access — fixed 2026-09-07.** The original 2026-09-05
+  invite link expired unused, and Medusa v2 has no way to self-register the
+  *first* admin user via the API once one doesn't exist — invites require an
+  already-authenticated admin to send them. Fixed by creating the user
+  directly on the container instead of via the invite flow:
+  ```bash
+  npx @railway/cli ssh --project 0468e228-77ff-42bf-b57b-82bba4692cac \
+    --service 996b307e-8195-427a-a698-6837e3a81f8c \
+    --environment c5c10a90-a2a2-4656-8860-a1c899980753 \
+    -- npx medusa user -e <email> -p '<password>'
+  ```
+  (`railway ssh` needs an interactive permission approval in Claude Code's
+  auto mode — a chat "yes" isn't enough, the user has to run it themselves
+  or loosen the Bash permission first.) Passing all three IDs explicitly
+  means it works from any directory, on any machine — no `railway link`
+  needed first. Mark's own admin login exists this way now; add Hayden's
+  from inside the admin (Settings → Users) once he's ready, rather than
+  re-running this for him.
+
+## Custom domain & DNS
+
+`haydengoseek.com` went live on Vercel 2026-09-07, cut over from the
+original WordPress/Hostinger hosting. Domain is registered at VentraIP;
+DNS was migrated from Hostinger's zone to **Cloudflare** (nameservers
+`algin.ns.cloudflare.com` / `raegan.ns.cloudflare.com`) so Mark has a
+proper DNS management UI going forward, rather than editing records
+directly in Hostinger's zone editor.
+
+- **Records**: `@` and `www` are `A` records to Vercel's `76.76.21.21`,
+  both set **DNS only** (grey cloud, not proxied) — Vercel needs to see
+  direct traffic to issue its own SSL cert; proxying through Cloudflare
+  adds a second TLS hop and can break cert issuance/routing. `www` also has
+  a Vercel-side redirect to the apex (set via the Vercel API — no CLI flag
+  for domain redirects — `PATCH /v9/projects/{id}/domains/www.haydengoseek.com`
+  with `{"redirect": "haydengoseek.com", "redirectStatusCode": 308}`).
+- **Email (MX/SPF/DKIM/DMARC/autodiscover/autoconfig) deliberately left on
+  Hostinger, untouched** — Hayden's decision, 2026-09-07, revisit later if
+  he wants to move off Hostinger mail (Zoho Mail's free tier was the
+  recommended path; self-hosting was ruled out due to IP/deliverability
+  risk for a small business). **Important**: the DKIM CNAMEs
+  (`hostingermail-a/b/c._domainkey`) and `autodiscover`/`autoconfig` CNAMEs
+  must stay **DNS only** in Cloudflare too — Cloudflare's proxy only
+  handles HTTP(S) traffic, and proxying these breaks DKIM signing/mail
+  client autoconfiguration since they're resolved directly by mail
+  software, not browsers.
+- Vercel domain config: both `haydengoseek.com` and `www.haydengoseek.com`
+  added to the `storefront` project (`vercel domains add`).
+
+## Sanity CMS
+
+Real project created 2026-09-07: **`vy869vh5`** ("HaydenGoSeek"), under
+Mark's own Sanity account/organization (same as Geotools/Cowelle — consistent
+with this developer's other client projects), dataset `production`.
+
+- **CORS origins** (`npx sanity cors add <origin> --credentials`, needed for
+  the embedded Studio's auth to work): `https://haydengoseek.com`,
+  `https://www.haydengoseek.com`, `https://storefront-three-ochre.vercel.app`,
+  `http://localhost:3000`.
+- **Env vars**: `NEXT_PUBLIC_SANITY_PROJECT_ID=vy869vh5`,
+  `NEXT_PUBLIC_SANITY_DATASET=production` — set in
+  `apps/storefront/.env` (local) and as Vercel Production env vars
+  (`vercel env add`). `sanity.cli.ts` (committed, new) hardcodes the same
+  project ID for CLI commands (`sanity cors`, `sanity exec`, etc.) run
+  from `apps/storefront`.
+- **Access**: only Mark is currently a project member (Administrator role).
+  Hayden has no Sanity login yet — invite `haydengoseek@gmail.com` as an
+  Editor from [sanity.io/manage](https://sanity.io/manage) (project
+  `vy869vh5` → Members) when he's ready to edit content himself. Sanity
+  auth is per-person (Google/GitHub/email login), not a shared password.
+- **Content**: seeded via `apps/storefront/scripts/seed-sanity-content.ts`
+  (run with `npx sanity exec scripts/seed-sanity-content.ts
+  --with-user-token` from `apps/storefront`) — populates `homePage`,
+  `siteSettings`, `artistBio`, all 17 `faqItem`s, the three `page` docs
+  (about/contact/shipping-returns), and one sample `blogPost`, all with the
+  site's real current copy. `createOrReplace` with fixed `_id`s, so it's
+  safe to re-run (won't duplicate).
 
 ## Data migration source
 
