@@ -24,30 +24,36 @@ export function urlForImage(source: SanityImageSource) {
 
 export type SanityCta = { label: string; url: string } | null
 
-export type SanityCollectionTeaser = {
-  title: string
-  description: string | null
-  image: SanityImageSource | null
-  medusaCategoryHandle: string | null
-}
-
 export type SanityHomePage = {
-  heading: string
-  subheading: string | null
-  heroImage: SanityImageSource | null
-  primaryCta: SanityCta
-  collectionTeasers: SanityCollectionTeaser[] | null
-  introHeading: string | null
-  introBody: PortableTextBlock[] | null
-  showFaqSection: boolean
+  hero: {
+    eyebrow: string | null
+    zoomHeading: string | null
+    revealLabel: string | null
+    revealStatement: string | null
+    cta: SanityCta
+    backdropImage: SanityImageSource | null
+    insetRevealImage: SanityImageSource | null
+    closingImage: SanityImageSource | null
+    scrollLabel: string | null
+    sectionLabel: string | null
+  } | null
+  artworksCarousel: { eyebrow: string | null; heading: string | null } | null
+  teamSlider: { eyebrow: string | null } | null
+  faqSection: { heading: string | null; showSection: boolean } | null
+  contactSection: {
+    eyebrow: string | null
+    headingLines: string[] | null
+    note: string | null
+    directEmail: string | null
+    studioAddress: string | null
+  } | null
 }
 
 export async function getHomePage() {
   if (!sanityClient) return null
   return sanityClient.fetch<SanityHomePage | null>(
     `*[_type == "homePage"][0]{
-      heading, subheading, heroImage, primaryCta, collectionTeasers,
-      introHeading, introBody, showFaqSection
+      hero, artworksCarousel, teamSlider, faqSection, contactSection
     }`,
     {},
     { next: { revalidate: 60 } }
@@ -84,7 +90,7 @@ export async function getFaqItems() {
 
 export type SanityArtistBio = {
   name: string | null
-  tagline: string | null
+  role: string | null
   portrait: SanityImageSource | null
   bio: PortableTextBlock[] | null
 }
@@ -92,7 +98,7 @@ export type SanityArtistBio = {
 export async function getArtistBio() {
   if (!sanityClient) return null
   return sanityClient.fetch<SanityArtistBio | null>(
-    `*[_type == "artistBio"][0]{ name, tagline, portrait, bio }`,
+    `*[_type == "artistBio"][0]{ name, role, portrait, bio }`,
     {},
     { next: { revalidate: 60 } }
   )
@@ -100,22 +106,77 @@ export async function getArtistBio() {
 
 export type SanitySiteSettings = {
   title: string | null
-  logo: SanityImageSource | null
-  logoReverse: SanityImageSource | null
+  announcementText: string | null
   navLinks: { label: string; href: string }[] | null
   contactEmail: string | null
   contactPhone: string | null
   address: string | null
-  footerText: string | null
+  socialLinks: { platform: string; url: string }[] | null
+  footerColumns: { heading: string; links: { label: string; href: string }[] }[] | null
+  newsletterHeading: string | null
+  newsletterBody: string | null
+  newsletterPlaceholder: string | null
+  copyrightName: string | null
 }
 
 export async function getSiteSettings() {
   if (!sanityClient) return null
   return sanityClient.fetch<SanitySiteSettings | null>(
     `*[_type == "siteSettings"][0]{
-      title, logo, logoReverse, navLinks, contactEmail, contactPhone, address, footerText
+      title, announcementText, navLinks, contactEmail, contactPhone, address,
+      socialLinks, footerColumns, newsletterHeading, newsletterBody,
+      newsletterPlaceholder, copyrightName
     }`,
     {},
+    { next: { revalidate: 60 } }
+  )
+}
+
+export type SanityGenericPage = {
+  title: string
+  body: PortableTextBlock[] | null
+}
+
+export async function getPageBySlug(slug: string) {
+  if (!sanityClient) return null
+  return sanityClient.fetch<SanityGenericPage | null>(
+    `*[_type == "page" && slug.current == $slug][0]{ title, body }`,
+    { slug },
+    { next: { revalidate: 60 } }
+  )
+}
+
+export type SanityBlogPostSummary = {
+  title: string
+  slug: string
+  coverImage: SanityImageSource | null
+  excerpt: string | null
+  publishedAt: string
+}
+
+export async function getBlogPosts() {
+  if (!sanityClient) return []
+  return sanityClient.fetch<SanityBlogPostSummary[]>(
+    `*[_type == "blogPost"] | order(publishedAt desc) {
+      title, "slug": slug.current, coverImage, excerpt, publishedAt
+    }`,
+    {},
+    { next: { revalidate: 60 } }
+  )
+}
+
+export type SanityBlogPost = SanityBlogPostSummary & {
+  author: string | null
+  body: PortableTextBlock[]
+}
+
+export async function getBlogPostBySlug(slug: string) {
+  if (!sanityClient) return null
+  return sanityClient.fetch<SanityBlogPost | null>(
+    `*[_type == "blogPost" && slug.current == $slug][0]{
+      title, "slug": slug.current, coverImage, excerpt, publishedAt, author, body
+    }`,
+    { slug },
     { next: { revalidate: 60 } }
   )
 }

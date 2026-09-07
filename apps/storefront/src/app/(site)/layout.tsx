@@ -16,6 +16,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://haydengoseek.com"),
   title: "HaydenGoSeek | Original Art & Fine Art Prints",
   description:
     "Original artworks, museum-quality fine art prints and handcrafted framing by Hayden Andrews. Gold Coast, Australia.",

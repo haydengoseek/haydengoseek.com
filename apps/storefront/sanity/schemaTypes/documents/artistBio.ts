@@ -7,7 +7,7 @@ export default defineType({
   description: 'Singleton — only one of these should exist.',
   fields: [
     defineField({name: 'name', title: 'Name', type: 'string'}),
-    defineField({name: 'tagline', title: 'Tagline', type: 'string'}),
+    defineField({name: 'role', title: 'Role', description: 'e.g. "Artist & Musician"', type: 'string'}),
     defineField({name: 'portrait', title: 'Portrait', type: 'image', options: {hotspot: true}}),
     defineField({
       name: 'bio',

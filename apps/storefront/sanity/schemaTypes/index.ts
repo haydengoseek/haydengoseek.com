@@ -6,6 +6,7 @@ import faqItem from './documents/faqItem'
 import artistBio from './documents/artistBio'
 import page from './documents/page'
 import siteSettings from './documents/siteSettings'
+import blogPost from './documents/blogPost'
 
 export const schemaTypes = [
   // objects
@@ -18,4 +19,5 @@ export const schemaTypes = [
   artistBio,
   page,
   siteSettings,
+  blogPost,
 ]
