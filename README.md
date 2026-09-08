@@ -449,6 +449,19 @@ with this developer's other client projects), dataset `production`.
   (about/contact/shipping-returns), and one sample `blogPost`, all with the
   site's real current copy. `createOrReplace` with fixed `_id`s, so it's
   safe to re-run (won't duplicate).
+- **`homePage` Studio title fixed 2026-09-08** — it has no top-level
+  string field (just nested section objects), so Studio's default preview
+  fell back to dumping raw field data as the document title. Fixed with
+  an explicit `preview.prepare()` returning a static "Home Page".
+- **Generic pages** (`page` schema — about/contact/shipping-returns) got
+  an optional `heroImage` field 2026-09-08, rendered above the title when
+  set.
+- **`artwork` document type is still unused clutter in Studio's nav** —
+  scaffolded for future per-product editorial content (story + gallery on
+  top of Medusa's product data) but never wired to anything; shows "No
+  documents of this type" since none have ever been created. Flagged to
+  Mark as a candidate for removal since shop content is meant to stay
+  Medusa-only — not yet removed, pending his call.
 
 ## Stripe
 
@@ -506,9 +519,9 @@ details, Stripe payment session, order completion).
 - ~~No order confirmation emails~~ — **built 2026-09-08**, see "Order
   emails" below.
 
-**Three real bugs found and fixed during verification** (all three only
-surfaced by actually clicking through the flow in a browser, not by
-type-checking or reading the code):
+**Four real bugs found and fixed** (none caught by type-checking or
+reading the code — three surfaced during verification, one in real
+production use afterward):
 1. Increasing a cart line item's quantity past a one-of-one Original's
    real stock crashed the whole page — Medusa correctly rejects it
    server-side, but the server action let the error bubble up uncaught.
@@ -530,6 +543,18 @@ type-checking or reading the code):
    fire exactly once — the additional `cancelled` check was actively
    harmful once that was in place, so it was removed rather than patched
    further.
+4. **Found in real production use, 2026-09-08** (not caught during the
+   original verification pass): adding "Aztec Jewellery" to the cart
+   crashed the page outright. Root cause: `stockedQuantity()` (in
+   `lib/medusa.ts`) only ever summed `stocked_quantity`, never
+   `reserved_quantity` — so a one-of-one Original sitting fully reserved
+   in someone's abandoned cart (`stocked: 1, reserved: 1`, so genuinely 0
+   available) still displayed as a selectable Type option, and only
+   Medusa's own backend check rejected the add, uncaught. Fixed at the
+   root (available = stocked − reserved, so it now correctly disappears
+   from the selector like an already-sold Original does) plus a backstop:
+   `addToCart` now returns `{success, error}` instead of throwing, for the
+   legitimate race where two people try to buy the last unit at once.
 
 **How it was actually verified**: the Browser tool's remote pane couldn't
 get real keystrokes into Stripe's cross-origin Payment Element iframe (a
