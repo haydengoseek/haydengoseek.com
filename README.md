@@ -38,6 +38,19 @@ Stripe (payments).
    (Hayden's decision, 2026-09-07); MX/SPF/DKIM/DMARC all preserved
    untouched through the DNS cutover. Zoho Mail's free tier was the
    recommended path if this ever needs to move off Hostinger.
+4. **Composite shipping pricing** (discussed 2026-09-09, not yet built):
+   right now shipping is always a straight sum of each cart item's own
+   per-product rate. Mark wants rules like "2+ canvas framed prints ships
+   for less than A+B" and "extra paper prints ship free." The mechanism
+   exists natively — a `ShippingOption` with `price_type: "calculated"`
+   delegates to a custom Fulfillment Provider's `calculatePrice()`, which
+   receives every line item in the whole cart (not scoped to one shipping
+   profile) — same extension pattern as the existing Resend notification
+   provider (`apps/backend/src/modules/resend/`). Needs: a shipping-class
+   classification per product (canvas-framed / paper-unframed / original —
+   probably reusing the existing Frame/Type variant options), the new
+   provider itself, and Mark to pin down the exact rule wording (combined
+   vs. per-extra-item discount math) before coding.
 
 ## Picking this up on a different machine
 
