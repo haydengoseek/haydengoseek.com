@@ -239,6 +239,17 @@ combination has its own photo — see the comments there for the exact rules,
 including the special case for how "Original" always resolves to its own
 photo regardless of its (technically always-set) Frame value.
 
+## Favicon
+
+`apps/storefront/src/app/icon.svg` — Next's App Router auto-detects this
+filename, no manifest/metadata wiring needed. Content is the "HS" monogram
+from `svg/favicon-white.svg` (source file supplied by Mark, kept as-is,
+uncropped — an earlier attempt that cropped tightly to just the H was
+rejected in favour of using the supplied mark whole) with a dark square
+background (`#17140f`) added so it reads on both light and dark browser
+tabs. The stock Next.js `favicon.ico` was deleted so it doesn't take
+precedence over `icon.svg` in browsers that prefer `.ico`.
+
 ## Local development
 
 Requires Docker (for Postgres/Redis) and Node ≥20.
@@ -526,6 +537,14 @@ details, Stripe payment session, order completion).
   doesn't charge for unconfirmed intents, standard practice) but would
   need revisiting if address-dependent tax/shipping is ever added, since
   the amount is currently computed before the address is known.
+- **Payment moved to its own centre column.** The address form and the
+  Payment Element used to stack in one left-hand column with the order
+  summary off to the side, leaving a large empty gap on wide screens.
+  `checkout/page.tsx`'s grid is now `lg:grid-cols-3` (address / payment /
+  summary), and `CheckoutFields.tsx`'s `<form>` renders as `display:contents`
+  so its two sections (address fields, payment + submit) land directly as
+  the first two grid items instead of being wrapped together in one box.
+  Collapses to a single stacked column below `lg`.
 
 **Original scope decisions (still true):**
 - **Australia only.** Only one region/shipping zone exists (see the seed

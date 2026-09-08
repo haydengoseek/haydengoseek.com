@@ -62,41 +62,47 @@ export default function CheckoutFields() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-8">
-        {FIELDS.map((field) => (
-          <div key={field.name} className={field.span === 2 ? "col-span-2" : "col-span-1"}>
-            <label
-              htmlFor={`checkout-${field.name}`}
-              className="block text-xs font-medium uppercase tracking-[0.08em] text-muted"
-            >
-              {field.label}
-            </label>
-            <input
-              id={`checkout-${field.name}`}
-              name={field.name}
-              type={field.type}
-              autoComplete={field.autoComplete}
-              required={field.name !== "phone"}
-              className="mt-4 w-full border-b border-line bg-transparent pb-3 text-lg tracking-[-0.01em] text-ink outline-none transition-colors placeholder:text-muted focus-visible:border-ink focus-visible:ring-0"
-            />
-          </div>
-        ))}
+    // display:contents makes the form itself invisible to layout — its two
+    // direct children become the actual grid items in the parent page's
+    // 3-column grid (address / payment / summary), while still submitting
+    // as a single form.
+    <form onSubmit={handleSubmit} className="contents">
+      <div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-8">
+          {FIELDS.map((field) => (
+            <div key={field.name} className={field.span === 2 ? "col-span-2" : "col-span-1"}>
+              <label
+                htmlFor={`checkout-${field.name}`}
+                className="block text-xs font-medium uppercase tracking-[0.08em] text-muted"
+              >
+                {field.label}
+              </label>
+              <input
+                id={`checkout-${field.name}`}
+                name={field.name}
+                type={field.type}
+                autoComplete={field.autoComplete}
+                required={field.name !== "phone"}
+                className="mt-4 w-full border-b border-line bg-transparent pb-3 text-lg tracking-[-0.01em] text-ink outline-none transition-colors placeholder:text-muted focus-visible:border-ink focus-visible:ring-0"
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-8 border-t border-line pt-8">
+      <div className="mt-8 border-t border-line pt-8 lg:mt-0 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
         <PaymentElement />
+
+        {error && <p className="mt-6 text-sm text-danger">{error}</p>}
+
+        <button
+          type="submit"
+          disabled={!stripe || isSubmitting}
+          className="mt-8 w-full bg-ink py-3.5 text-sm text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
+        >
+          {isSubmitting ? "Processing…" : "Place order"}
+        </button>
       </div>
-
-      {error && <p className="mt-6 text-sm text-danger">{error}</p>}
-
-      <button
-        type="submit"
-        disabled={!stripe || isSubmitting}
-        className="mt-8 w-full bg-ink py-3.5 text-sm text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
-      >
-        {isSubmitting ? "Processing…" : "Place order"}
-      </button>
     </form>
   )
 }

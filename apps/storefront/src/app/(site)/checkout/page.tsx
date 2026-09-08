@@ -51,19 +51,20 @@ export default async function CheckoutPage() {
     <div className="mx-auto max-w-[1600px] px-4 py-12 sm:px-8">
       <h1 className="text-2xl">Checkout</h1>
 
-      <div className="mt-8 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)]">
-        <div className="lg:max-w-lg">
-          {clientSecret ? (
-            // Stripe's <Elements> ignores a changed clientSecret after it first
-            // mounts — key it so editing a line item's quantity (which creates a
-            // fresh payment session with the new total) forces a clean remount.
-            <CheckoutForm key={clientSecret} clientSecret={clientSecret} />
-          ) : (
-            <p className="text-sm text-danger">
-              We couldn&apos;t set up payment right now. Please refresh the page or try again shortly.
-            </p>
-          )}
-        </div>
+      <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-12 lg:grid-cols-3">
+        {clientSecret ? (
+          // Stripe's <Elements> ignores a changed clientSecret after it first
+          // mounts — key it so editing a line item's quantity (which creates a
+          // fresh payment session with the new total) forces a clean remount.
+          // CheckoutForm renders its fields as `display:contents`, so its two
+          // sections (address, payment) land directly in this grid as the
+          // first two columns rather than being wrapped in an extra box.
+          <CheckoutForm key={clientSecret} clientSecret={clientSecret} />
+        ) : (
+          <p className="text-sm text-danger lg:col-span-2">
+            We couldn&apos;t set up payment right now. Please refresh the page or try again shortly.
+          </p>
+        )}
 
         <div className="h-fit border-t border-line pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
           {cart.items.map((item) => (
