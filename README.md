@@ -495,33 +495,51 @@ against Stripe's own API rather than assumed:
 
 ## Cart & checkout
 
-Built and verified 2026-09-08 — full guest checkout, no accounts/login
-(none existed before; out of scope). New files: `apps/storefront/src/app/
-(site)/cart/page.tsx`, `.../checkout/page.tsx`, `.../checkout/confirmed/
-page.tsx`, plus `components/cart/CartLineItem.tsx` and
-`components/checkout/{CheckoutForm,PaymentStep,OrderCompleter}.tsx`.
+Built and verified 2026-09-08, streamlined further the same day — full
+guest checkout (no accounts/login; none existed before, out of scope).
+Key files: `apps/storefront/src/app/(site)/checkout/{page,confirmed/page}.tsx`
+(`(site)/cart/page.tsx` is now just `redirect("/checkout")` — see below),
+`components/cart/{CartLineItem,CartButton,CartDrawer,CartDrawerContext}.tsx`,
+`components/checkout/{CheckoutForm,CheckoutFields,OrderCompleter}.tsx`.
 `lib/cart-actions.ts` grew from just `addToCart`/`getCartItemCount` to the
 full set (`getCart`, line-item update/remove, shipping options, checkout
 details, Stripe payment session, order completion).
 
-**Scope decisions:**
+**Streamlined same day, per Mark's request to cut clicks:**
+- **Floating cart drawer** replaces the old plain "Cart (N)" header text —
+  a slide-out panel (client-side, no page load) showing live, editable
+  line items. Opens automatically on a successful add-to-cart, or via the
+  header's cart icon (`CartButton.tsx`) any time. State lives in
+  `CartDrawerContext.tsx`, mounted once in `(site)/layout.tsx`.
+- **`/cart` merged into `/checkout`** — one URL, one page: editable line
+  items alongside the address + payment form. The old separate `/cart`
+  page is now just a redirect.
+- **Checkout collapsed from two steps to one.** It used to be: submit
+  address → Payment Element reveals → submit again. Now the `/checkout`
+  page itself creates the Stripe payment session server-side as soon as
+  it loads (auto-attaching the one shipping option first, so the real
+  total is already known) and shows the address fields and Payment
+  Element together from the start — one "Place order" submit does both
+  `setCheckoutDetails` and `stripe.confirmPayment`. Tradeoff worth
+  knowing: this creates a Stripe PaymentIntent on every `/checkout` page
+  load/refresh, even before the customer commits — harmless (Stripe
+  doesn't charge for unconfirmed intents, standard practice) but would
+  need revisiting if address-dependent tax/shipping is ever added, since
+  the amount is currently computed before the address is known.
+
+**Original scope decisions (still true):**
 - **Australia only.** Only one region/shipping zone exists (see the seed
   script); country is fixed to `au` rather than a form field. The site's
   own FAQ claims international shipping — that's not actually backed by
   the commerce config yet, worth flagging to Hayden separately since real
   international rates would be needed first.
-- **Single-page checkout** — address form + order summary + Stripe Payment
-  Element all on one page (the one shipping option is auto-selected, no
-  picker needed), rather than a multi-step wizard with nothing real to
-  step through.
 - No separate billing address (reused from shipping) — reasonable for a
   small solo-artist store, not attempted here.
 - ~~No order confirmation emails~~ — **built 2026-09-08**, see "Order
   emails" below.
 
-**Four real bugs found and fixed** (none caught by type-checking or
-reading the code — three surfaced during verification, one in real
-production use afterward):
+**Six real bugs found and fixed across both sessions** (none caught by
+type-checking or reading the code):
 1. Increasing a cart line item's quantity past a one-of-one Original's
    real stock crashed the whole page — Medusa correctly rejects it
    server-side, but the server action let the error bubble up uncaught.
@@ -555,6 +573,20 @@ production use afterward):
    from the selector like an already-sold Original does) plus a backstop:
    `addToCart` now returns `{success, error}` instead of throwing, for the
    legitimate race where two people try to buy the last unit at once.
+5. **Caught while streamlining checkout, same day**: after attaching the
+   shipping method server-side, re-fetching the cart to get real totals
+   returned the *pre-shipping* snapshot (shipping showed $0). Cause:
+   Next's per-request fetch memoization deduped the second identical
+   `getCart()` call within the same render — same URL, same options, so
+   React treated it as the same request and returned the cached result
+   instead of hitting the network again. Fixed by giving `getCart()`'s
+   underlying request a unique header on every call, so cart reads never
+   get silently deduped against each other.
+6. **Same session**: Medusa's own cart `subtotal` field is actually
+   items + shipping combined (per its own doc comment), not items-only —
+   directly above a separate "Shipping" row this looked like shipping was
+   being charged twice. Fixed by fetching `item_subtotal` instead and
+   using that as the displayed "Subtotal".
 
 **How it was actually verified**: the Browser tool's remote pane couldn't
 get real keystrokes into Stripe's cross-origin Payment Element iframe (a
