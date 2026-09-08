@@ -29,6 +29,7 @@ export default function ProductInteractive({ product }: { product: ProductDetail
   )
   const [isPending, startTransition] = useTransition()
   const [added, setAdded] = useState(false)
+  const [addToCartError, setAddToCartError] = useState<string | null>(null)
 
   const activeVariant = useMemo(() => {
     return product.variants.find((v) =>
@@ -67,6 +68,7 @@ export default function ProductInteractive({ product }: { product: ProductDetail
   // otherwise fall back to whichever matching variant keeps the most of it.
   function selectOption(title: string, value: string) {
     setAdded(false)
+    setAddToCartError(null)
     setSelected((prev) => {
       const candidate = { ...prev, [title]: value }
       const exact = product.variants.find((v) =>
@@ -102,10 +104,15 @@ export default function ProductInteractive({ product }: { product: ProductDetail
 
   function handleAddToCart() {
     if (!activeVariant) return
+    setAddToCartError(null)
     startTransition(async () => {
-      await addToCart(activeVariant.id, 1)
-      setAdded(true)
-      router.refresh()
+      const result = await addToCart(activeVariant.id, 1)
+      if (result.success) {
+        setAdded(true)
+        router.refresh()
+      } else {
+        setAddToCartError(result.error)
+      }
     })
   }
 
@@ -193,6 +200,8 @@ export default function ProductInteractive({ product }: { product: ProductDetail
         >
           {isPending ? "Adding…" : added ? "Added to cart" : "Add to cart"}
         </button>
+
+        {addToCartError && <p className="mt-2 text-sm text-danger">{addToCartError}</p>}
 
         <dl className="mt-8 space-y-2 border-t border-line pt-6 text-sm text-muted">
           <div className="flex justify-between">

@@ -38,11 +38,19 @@ async function getCartId(): Promise<string | null> {
   return cookieStore.get(CART_COOKIE)?.value ?? null
 }
 
-export async function addToCart(variantId: string, quantity = 1) {
+export type AddToCartResult = { success: true; itemCount: number } | { success: false; error: string }
+
+export async function addToCart(variantId: string, quantity = 1): Promise<AddToCartResult> {
   const cartId = await getOrCreateCartId()
-  await medusa.store.cart.createLineItem(cartId, { variant_id: variantId, quantity })
+  try {
+    await medusa.store.cart.createLineItem(cartId, { variant_id: variantId, quantity })
+  } catch {
+    // Most commonly: the variant sold out or its remaining stock was reserved
+    // by another cart between page load and this click.
+    return { success: false, error: "Sorry, this is no longer available." }
+  }
   const { cart } = await medusa.store.cart.retrieve(cartId, { fields: "items.quantity" })
-  return { itemCount: itemCount(cart) }
+  return { success: true, itemCount: itemCount(cart) }
 }
 
 export async function getCartItemCount(): Promise<number> {

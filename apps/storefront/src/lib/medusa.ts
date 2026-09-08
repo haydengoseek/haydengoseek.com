@@ -89,7 +89,7 @@ type RawOption = { id: string; title: string; values: RawOptionValue[] }
 type RawCategoryRef = { id: string; name: string; handle: string }
 type RawCalculatedPrice = { calculated_amount: number } | null
 type RawVariantOption = { value: string; option?: { title?: string } | null }
-type RawLocationLevel = { stocked_quantity: number }
+type RawLocationLevel = { stocked_quantity: number; reserved_quantity?: number }
 type RawInventoryItem = { inventory?: { location_levels?: RawLocationLevel[] } | null }
 type RawImage = { id: string; url: string; metadata: Record<string, unknown> | null }
 
@@ -254,9 +254,17 @@ const DETAIL_FIELDS =
   "*variants,*variants.options,*variants.calculated_price," +
   "*variants.inventory_items.inventory.location_levels"
 
+// Available stock, not just stocked — a fully-reserved variant (e.g. sitting
+// in someone's abandoned cart) has stocked_quantity > 0 but is not actually
+// purchasable, and Medusa's own add-to-cart check nets out reservations too.
 function stockedQuantity(variant: RawDetailVariant): number {
   return (variant.inventory_items ?? []).reduce(
-    (sum, ii) => sum + (ii.inventory?.location_levels ?? []).reduce((s, l) => s + (l.stocked_quantity ?? 0), 0),
+    (sum, ii) =>
+      sum +
+      (ii.inventory?.location_levels ?? []).reduce(
+        (s, l) => s + Math.max(0, (l.stocked_quantity ?? 0) - (l.reserved_quantity ?? 0)),
+        0
+      ),
     0
   )
 }
