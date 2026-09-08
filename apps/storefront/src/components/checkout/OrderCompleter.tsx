@@ -72,7 +72,8 @@ export default function OrderCompleter({ paymentIntent }: { paymentIntent?: stri
     <>
       <h1 className="text-2xl">Thank you for your order</h1>
       <p className="mt-2 text-sm text-muted">
-        Order {displayId ? `#${displayId}` : ""} confirmed — a confirmation has been sent to {order.email}.
+        Order {displayId ? `#${displayId}` : ""} confirmed for {order.email}. Save this page for your records —
+        confirmation emails aren&apos;t set up yet.
       </p>
 
       <ul className="mt-8 space-y-4 border-t border-line pt-6 text-sm">
