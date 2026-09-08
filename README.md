@@ -21,13 +21,14 @@ Stripe (payments).
   site's real copy. See "Sanity CMS" below.
 
 **Still open before this is fully customer-ready:**
-1. **`STRIPE_WEBHOOK_SECRET` isn't set on the backend yet** — creating a
-   Stripe webhook endpoint needs to be done manually via the Stripe
-   Dashboard (an agent session can't do this — it's treated as a sensitive
-   account change). See "Deployment — current status" for the exact URL/
-   events to configure.
-2. Real (live) Stripe keys and the cart/checkout UI are still stubs — see
-   the full list below.
+1. **No `/cart` or `/checkout` page UI — this is the main remaining gap.**
+   Add-to-cart works end-to-end at the data layer and the Stripe/Medusa
+   payment flow is proven against the real API, but there's no page for a
+   customer to actually view their cart or complete an order on the live
+   site. **Next task, not yet started.**
+2. Real (live) Stripe keys — test mode is fully wired (see "Stripe" below);
+   flipping to live is a deliberate later step once checkout UI exists and
+   Hayden's ready to actually take payment.
 3. Custom email for the domain — deliberately left on Hostinger for now
    (Hayden's decision, 2026-09-07); MX/SPF/DKIM/DMARC all preserved
    untouched through the DNS cutover. Zoho Mail's free tier was the
@@ -194,10 +195,9 @@ docker-compose.yml       Local Postgres + Redis for the Medusa backend.
   WordPress site before it's decommissioned.
 - **Shipping rates are a placeholder** ($25 flat) — need Hayden's actual
   domestic/international rates.
-- **Stripe is in test mode** — real (live) keys need to go in before
-  actually taking payment from customers.
-- **`STRIPE_WEBHOOK_SECRET` still not set on the Railway backend** — manual
-  Stripe Dashboard step, see "Deployment — current status".
+- **Stripe is in test mode** (confirmed 2026-09-08 — fully wired, not
+  skipped) — real (live) keys need to go in before actually taking payment
+  from customers. See "Stripe" under Deployment for account details.
 - **Cart/checkout pages aren't built** — Add to Cart works end-to-end at the
   data layer, but there's no `/cart` or `/checkout` page UI yet to view or
   complete an order from the storefront itself (the Stripe/Medusa flow was
@@ -292,26 +292,16 @@ Both backend and storefront are live, as of 2026-09-05.
   `/app/static` for durable file storage, 14 products seeded (see
   "Seeding production" below for how, since the seed script needs files
   from outside `apps/backend`). Still open:
-  - **`STRIPE_WEBHOOK_SECRET` isn't set yet.** Create a webhook endpoint in
-    the Stripe Dashboard pointed at
-    `https://backend-production-eae1.up.railway.app/hooks/payment/stripe`
-    for these events: `payment_intent.amount_capturable_updated`,
-    `.canceled`, `.partially_funded`, `.payment_failed`, `.processing`,
-    `.requires_action`, `.succeeded` — then
-    `railway variable set STRIPE_WEBHOOK_SECRET=whsec_... --service backend`.
-    (Can't be automated from an agent session — Stripe account changes are
-    treated as sensitive.)
   - ~~Products seeded but draft~~ — **published 2026-09-05** with exact
     scraped pricing (see the pricing stub entry above for how). All 14 are
     live on `/store/products` and the storefront's `/shop`.
   - ~~Admin dashboard disabled in production~~ — **fixed 2026-09-05**, see
     the gotcha below. Live at
-    `https://backend-production-eae1.up.railway.app/app`. An invite was
-    sent to `markperic@gmail.com` to set up the first admin login — add
-    Hayden's own account from inside the admin (Settings → Users) once
-    he's ready, rather than re-inviting via CLI.
+    `https://backend-production-eae1.up.railway.app/app`. Admin login was
+    fixed 2026-09-07 (see "Medusa admin access" below) — the original
+    invite approach never worked out.
   - Real (live) Stripe keys still need to replace the test-mode
-    `STRIPE_API_KEY` before actually taking payment — see the stubs list.
+    `STRIPE_API_KEY` before actually taking payment — see "Stripe" below.
 - **Storefront → Vercel.** Project "storefront" under the `haydengoseek`
   Vercel team, live at `https://storefront-three-ochre.vercel.app`. Env
   vars set: `NEXT_PUBLIC_MEDUSA_BACKEND_URL` (the Railway URL above),
@@ -456,6 +446,36 @@ with this developer's other client projects), dataset `production`.
   (about/contact/shipping-returns), and one sample `blogPost`, all with the
   site's real current copy. `createOrReplace` with fixed `_id`s, so it's
   safe to re-run (won't duplicate).
+
+## Stripe
+
+**Confirmed 2026-09-08: test mode was never skipped.** There was a moment
+of doubt about this (the account is named "Real Choice Framing," Hayden's
+framing business — separate from the "HaydenGoSeek" art-selling brand, but
+the same Stripe account handles both), so this was verified directly
+against Stripe's own API rather than assumed:
+
+- Account: `acct_1Su5WrBbNd3JJ1Ni`, AU, AUD, charges/payouts both enabled.
+- The `STRIPE_API_KEY` already set locally and on the Railway backend is a
+  genuine `sk_test_...` key (confirmed via `GET /v1/account`) — Hayden's
+  real account, correctly in test mode, not a placeholder.
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` on Vercel matches the same account's
+  `pk_test_...` key.
+- **`STRIPE_WEBHOOK_SECRET` is now set on Railway** (2026-09-08) — created
+  via Stripe's new **Workbench** (`dashboard.stripe.com/workbench/webhooks`
+  — replaced the old Developers → Webhooks page; Settings → Developers now
+  just shows a toggle confirming Workbench is on, it's not the tool itself)
+  pointed at `/hooks/payment/stripe` for the same event list documented
+  above. Backend redeployed clean afterward (`railway variable set`
+  triggers an automatic redeploy unless `--skip-deploys` is passed).
+- Stripe also moved **Test mode → Sandboxes**: click the business name
+  top-left → "Switch to sandbox" → Test mode, rather than a simple toggle.
+- **Live keys exist and were shared in this session's chat** (Hayden's
+  `pk_live_`/`sk_live_` pair) but deliberately **not** wired in anywhere —
+  staying in test mode until checkout UI exists and Hayden's ready to
+  actually go live. Worth having Hayden roll the live secret key in Stripe
+  Dashboard → Developers → API keys at some point, as routine hygiene for
+  a key that's touched a chat log, even though nothing was done with it.
 
 ## Data migration source
 
