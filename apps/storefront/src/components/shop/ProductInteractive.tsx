@@ -6,6 +6,7 @@ import type { ProductDetail, VariantOptionValues } from "@/lib/medusa"
 import { getImageForOptions, isVariantPurchasable } from "@/lib/medusa"
 import { formatPrice } from "@/lib/format"
 import { addToCart } from "@/lib/cart-actions"
+import { useCartDrawer } from "@/components/cart/CartDrawerContext"
 import ProductGallery from "./ProductGallery"
 
 // Frame values render as colour swatches (they have an obvious visual
@@ -24,6 +25,7 @@ function firstPurchasableVariant(variants: ProductDetail["variants"]) {
 
 export default function ProductInteractive({ product }: { product: ProductDetail }) {
   const router = useRouter()
+  const { open: openCartDrawer } = useCartDrawer()
   const [selected, setSelected] = useState<VariantOptionValues>(
     () => firstPurchasableVariant(product.variants)?.options ?? {}
   )
@@ -110,6 +112,7 @@ export default function ProductInteractive({ product }: { product: ProductDetail
       if (result.success) {
         setAdded(true)
         router.refresh()
+        openCartDrawer()
       } else {
         setAddToCartError(result.error)
       }

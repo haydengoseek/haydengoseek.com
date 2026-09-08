@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { getCartItemCount } from "@/lib/cart-actions"
 import { getSiteSettings } from "@/lib/sanity"
+import CartButton from "@/components/cart/CartButton"
 
 // Real current-site copy, kept as the default whenever a Sanity field is left blank.
 const FALLBACK_SITE_NAME = "HaydenGoSeek"
@@ -42,9 +43,7 @@ export default async function Header() {
         </nav>
 
         <div className="flex items-center gap-4 text-sm">
-          <Link href="/cart" aria-label={`${itemCount} items in cart`} className="hover:text-muted">
-            Cart ({itemCount})
-          </Link>
+          <CartButton itemCount={itemCount} />
         </div>
       </div>
     </header>

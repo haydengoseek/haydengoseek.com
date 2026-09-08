@@ -9,7 +9,18 @@ import type { CartLineItem as CartLineItemType } from "@/lib/cart-actions"
 import { updateLineItemQuantity, removeLineItem } from "@/lib/cart-actions"
 import { formatPrice } from "@/lib/format"
 
-export default function CartLineItem({ item, currencyCode }: { item: CartLineItemType; currencyCode: string }) {
+export default function CartLineItem({
+  item,
+  currencyCode,
+  onMutate,
+}: {
+  item: CartLineItemType
+  currencyCode: string
+  /** Called after a successful quantity change/removal — for callers (like the
+   * cart drawer) holding their own client-fetched copy of the cart that
+   * router.refresh() (a server-component refresh) won't touch. */
+  onMutate?: () => void
+}) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -20,6 +31,7 @@ export default function CartLineItem({ item, currencyCode }: { item: CartLineIte
       const result = await updateLineItemQuantity(item.id, quantity)
       if (result.success) {
         router.refresh()
+        onMutate?.()
       } else {
         setError(result.error)
       }
@@ -32,6 +44,7 @@ export default function CartLineItem({ item, currencyCode }: { item: CartLineIte
       try {
         await removeLineItem(item.id)
         router.refresh()
+        onMutate?.()
       } catch {
         setError("Couldn't remove this item — please try again.")
       }

@@ -64,8 +64,13 @@ export async function getCartItemCount(): Promise<number> {
   }
 }
 
+// Note: Medusa's own "subtotal" field is items + shipping combined (see its
+// own doc comment: "sum of item_subtotal and shipping_subtotal"), not the
+// items-only figure a "Subtotal" row conventionally means next to a separate
+// "Shipping" row — so this fetches item_subtotal instead and surfaces that
+// as `subtotal` below.
 const CART_FIELDS =
-  "id,email,currency_code,subtotal,shipping_total,tax_total,total," +
+  "id,email,currency_code,item_subtotal,shipping_total,tax_total,total," +
   "*items,*shipping_address,*shipping_methods,*payment_collection.payment_sessions"
 
 export type CartLineItem = {
@@ -127,7 +132,7 @@ type RawCart = {
   email?: string | null
   currency_code: string
   items?: RawCartLineItem[] | null
-  subtotal?: number
+  item_subtotal?: number
   shipping_total?: number
   tax_total?: number
   total?: number
@@ -150,7 +155,7 @@ function toCart(rawCart: unknown): Cart {
       variantTitle: item.variant_title ?? null,
       productHandle: item.product_handle ?? null,
     })),
-    subtotal: raw.subtotal ?? 0,
+    subtotal: raw.item_subtotal ?? 0,
     shippingTotal: raw.shipping_total ?? 0,
     taxTotal: raw.tax_total ?? 0,
     total: raw.total ?? 0,
@@ -174,7 +179,17 @@ export async function getCart(): Promise<Cart | null> {
   const cartId = await getCartId()
   if (!cartId) return null
   try {
-    const { cart } = await medusa.store.cart.retrieve(cartId, { fields: CART_FIELDS })
+    // Next's per-request fetch memoization dedupes identical GET requests —
+    // including this exact URL — within a single render. That's wrong for
+    // cart reads specifically: checkout's page load calls this again right
+    // after attaching a shipping method and needs the real post-shipping
+    // totals, not a cached pre-shipping snapshot. A unique header per call
+    // keeps the request identity distinct so it always hits the network.
+    const { cart } = await medusa.store.cart.retrieve(
+      cartId,
+      { fields: CART_FIELDS },
+      { "x-request-time": Date.now().toString() }
+    )
     return toCart(cart)
   } catch {
     return null
