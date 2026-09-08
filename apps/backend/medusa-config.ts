@@ -45,6 +45,22 @@ module.exports = defineConfig({
     // disk), or every uploaded file is lost on the next redeploy. MEDUSA_BACKEND_URL
     // must be the backend's real public URL in production too, since the
     // local provider bakes it into every file's returned URL.
+    {
+      resolve: "@medusajs/medusa/notification",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/resend",
+            id: "resend",
+            options: {
+              channels: ["email"],
+              api_key: process.env.RESEND_API_KEY,
+              from: process.env.RESEND_FROM_EMAIL,
+            },
+          },
+        ],
+      },
+    },
     process.env.S3_FILE_URL
       ? {
           resolve: "@medusajs/medusa/file",
