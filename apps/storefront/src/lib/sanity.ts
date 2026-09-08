@@ -60,23 +60,6 @@ export async function getHomePage() {
   )
 }
 
-export type SanityArtwork = {
-  title: string
-  medusaHandle: string
-  medium: string | null
-  story: PortableTextBlock[] | null
-  gallery: SanityImageSource[] | null
-}
-
-export async function getArtworkByHandle(handle: string) {
-  if (!sanityClient) return null
-  return sanityClient.fetch<SanityArtwork | null>(
-    `*[_type == "artwork" && medusaHandle == $handle][0]{ title, medusaHandle, medium, story, gallery }`,
-    { handle },
-    { next: { revalidate: 60 } }
-  )
-}
-
 export type SanityFaqItem = { question: string; answer: PortableTextBlock[] }
 
 export async function getFaqItems() {
