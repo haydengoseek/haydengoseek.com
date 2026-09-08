@@ -1,6 +1,6 @@
 import Link from "next/link"
 import type { Metadata } from "next"
-import { getCart, getShippingOptions, setShippingMethod, createPaymentSession } from "@/lib/cart-actions"
+import { getCart, initShippingIfNeeded, getShippingChoice, createPaymentSession } from "@/lib/cart-actions"
 import { formatPrice } from "@/lib/format"
 import CartLineItem from "@/components/cart/CartLineItem"
 import CheckoutForm from "@/components/checkout/CheckoutForm"
@@ -24,28 +24,24 @@ export default async function CheckoutPage() {
     )
   }
 
-  // Only one shipping option exists today, so it's attached automatically —
-  // there's nothing for the customer to actually choose. Re-fetching the
-  // cart afterward gives real (not estimated) shipping/total figures.
-  if (!cart.hasShippingMethod) {
-    const options = await getShippingOptions()
-    if (options[0]) {
-      await setShippingMethod(options[0].id)
-      cart = await getCart()
-    }
+  // Defaults any not-yet-covered shipping profile to Standard Shipping (see
+  // initShippingIfNeeded) — a customer can switch to Local Pickup once the
+  // form is visible. Re-fetching the cart afterward gives real (not
+  // estimated) shipping/total figures.
+  if (await initShippingIfNeeded()) {
+    cart = await getCart()
   }
+  if (!cart) return null
+
+  const shippingChoice = await getShippingChoice()
 
   let clientSecret: string | null = null
-  if (cart) {
-    try {
-      const session = await createPaymentSession()
-      clientSecret = session.clientSecret
-    } catch {
-      clientSecret = null
-    }
+  try {
+    const session = await createPaymentSession()
+    clientSecret = session.clientSecret
+  } catch {
+    clientSecret = null
   }
-
-  if (!cart) return null
 
   return (
     <div className="mx-auto max-w-[1600px] px-4 py-12 sm:px-8">
@@ -59,7 +55,7 @@ export default async function CheckoutPage() {
           // CheckoutForm renders its fields as `display:contents`, so its two
           // sections (address, payment) land directly in this grid as the
           // first two columns rather than being wrapped in an extra box.
-          <CheckoutForm key={clientSecret} clientSecret={clientSecret} />
+          <CheckoutForm key={clientSecret} clientSecret={clientSecret} shippingChoice={shippingChoice} />
         ) : (
           <p className="text-sm text-danger lg:col-span-2">
             We couldn&apos;t set up payment right now. Please refresh the page or try again shortly.
@@ -78,7 +74,7 @@ export default async function CheckoutPage() {
             </div>
             <div className="flex justify-between">
               <dt className="text-muted">Shipping</dt>
-              <dd>{formatPrice(cart.shippingTotal, cart.currencyCode)}</dd>
+              <dd>{shippingChoice.isPickupSelected ? "Free — pickup" : formatPrice(cart.shippingTotal, cart.currencyCode)}</dd>
             </div>
             <div className="flex justify-between border-t border-line pt-2 text-base">
               <dt>Total</dt>

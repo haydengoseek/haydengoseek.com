@@ -221,24 +221,110 @@ export async function removeLineItem(lineItemId: string) {
   await medusa.store.cart.deleteLineItem(cartId, lineItemId)
 }
 
-export type ShippingOption = { id: string; name: string; amount: number }
+// Every product has its own shipping profile (so Hayden can set a custom
+// shipping price per artwork in the admin), and each profile carries the
+// same two named options — "Standard Shipping" and "Local Pickup" ($0) — on
+// the one shared "Australia" service zone. A cart whose items span more than
+// one product therefore spans more than one profile, and Medusa requires a
+// shipping method per distinct profile represented (see
+// validateShippingStep server-side) — listCartOptions returns every option
+// across every profile tied to the fulfillment set, tagged with
+// shipping_profile_id, so the helpers below group by that field rather than
+// assuming a single flat rate applies to the whole cart.
+type RawShippingOption = { id: string; name: string; amount?: number; shipping_profile_id?: string | null }
 
-export async function getShippingOptions(): Promise<ShippingOption[]> {
+async function getCartShippingOptionsRaw(): Promise<RawShippingOption[]> {
   const cartId = await getCartId()
   if (!cartId) return []
   const { shipping_options } = await medusa.store.fulfillment.listCartOptions({ cart_id: cartId })
-  const options = shipping_options as unknown as { id: string; name: string; amount?: number }[]
-  return options.map((o) => ({
-    id: o.id,
-    name: o.name,
-    amount: o.amount ?? 0,
-  }))
+  return shipping_options as unknown as RawShippingOption[]
 }
 
-export async function setShippingMethod(optionId: string) {
+async function getCartShippingProfileIds(): Promise<string[]> {
+  const cartId = await getCartId()
+  if (!cartId) return []
+  const { cart } = await medusa.store.cart.retrieve(cartId, {
+    fields: "items.product.shipping_profile.id",
+  })
+  const raw = cart as unknown as {
+    items?: ({ product?: { shipping_profile?: { id: string } | null } | null } | null)[] | null
+  }
+  const ids = new Set<string>()
+  for (const item of raw.items ?? []) {
+    const id = item?.product?.shipping_profile?.id
+    if (id) ids.add(id)
+  }
+  return [...ids]
+}
+
+async function getCoveredShippingProfileIds(options: RawShippingOption[]): Promise<Set<string>> {
+  const cartId = await getCartId()
+  if (!cartId) return new Set()
+  const { cart } = await medusa.store.cart.retrieve(cartId, { fields: "*shipping_methods" })
+  const raw = cart as unknown as { shipping_methods?: { shipping_option_id?: string | null }[] | null }
+  const optionById = new Map(options.map((o) => [o.id, o]))
+  const covered = new Set<string>()
+  for (const method of raw.shipping_methods ?? []) {
+    const option = method.shipping_option_id ? optionById.get(method.shipping_option_id) : undefined
+    if (option?.shipping_profile_id) covered.add(option.shipping_profile_id)
+  }
+  return covered
+}
+
+// Attaches "Standard Shipping" to any distinct shipping profile in the cart
+// that doesn't already have a method attached — called on checkout load.
+// Never touches a profile that's already covered, so a customer's Local
+// Pickup choice survives editing the cart or reloading the page. Returns
+// whether it actually attached anything (so the caller knows to re-fetch
+// the cart for updated totals).
+export async function initShippingIfNeeded(): Promise<boolean> {
+  const cartId = await getCartId()
+  if (!cartId) return false
+  const [profileIds, options] = await Promise.all([getCartShippingProfileIds(), getCartShippingOptionsRaw()])
+  const covered = await getCoveredShippingProfileIds(options)
+  const missing = profileIds.filter((id) => !covered.has(id))
+  for (const profileId of missing) {
+    const option = options.find((o) => o.shipping_profile_id === profileId && o.name === "Standard Shipping")
+    if (option) await medusa.store.cart.addShippingMethod(cartId, { option_id: option.id })
+  }
+  return missing.length > 0
+}
+
+export type ShippingChoice = { standardAmount: number; isPickupSelected: boolean }
+
+export async function getShippingChoice(): Promise<ShippingChoice> {
+  const [profileIds, options] = await Promise.all([getCartShippingProfileIds(), getCartShippingOptionsRaw()])
+  const relevant = options.filter((o) => o.shipping_profile_id && profileIds.includes(o.shipping_profile_id))
+  const standardAmount = relevant
+    .filter((o) => o.name === "Standard Shipping")
+    .reduce((sum, o) => sum + (o.amount ?? 0), 0)
+  const pickupOptions = relevant.filter((o) => o.name === "Local Pickup")
+
+  const covered = await getCoveredShippingProfileIds(options)
+  const cartId = await getCartId()
+  let isPickupSelected = false
+  if (cartId && pickupOptions.length > 0) {
+    const { cart } = await medusa.store.cart.retrieve(cartId, { fields: "*shipping_methods" })
+    const raw = cart as unknown as { shipping_methods?: { shipping_option_id?: string | null }[] | null }
+    const methodOptionIds = new Set((raw.shipping_methods ?? []).map((m) => m.shipping_option_id).filter(Boolean))
+    isPickupSelected =
+      profileIds.every((id) => covered.has(id)) && pickupOptions.every((o) => methodOptionIds.has(o.id))
+  }
+
+  return { standardAmount, isPickupSelected }
+}
+
+// Explicit customer toggle — applies to every distinct shipping profile
+// currently in the cart, overriding whatever was attached before.
+export async function setShippingChoice(usePickup: boolean) {
   const cartId = await getCartId()
   if (!cartId) throw new Error("No cart")
-  await medusa.store.cart.addShippingMethod(cartId, { option_id: optionId })
+  const [profileIds, options] = await Promise.all([getCartShippingProfileIds(), getCartShippingOptionsRaw()])
+  const targetName = usePickup ? "Local Pickup" : "Standard Shipping"
+  for (const profileId of profileIds) {
+    const option = options.find((o) => o.shipping_profile_id === profileId && o.name === targetName)
+    if (option) await medusa.store.cart.addShippingMethod(cartId, { option_id: option.id })
+  }
 }
 
 export type CheckoutAddress = {
@@ -272,12 +358,10 @@ export async function setCheckoutDetails(email: string, address: CheckoutAddress
     billing_address: addressPayload,
   })
 
-  // Only one shipping option exists today — select it automatically as
-  // part of setting checkout details, rather than a picker UI.
-  const options = await getShippingOptions()
-  if (options[0]) {
-    await setShippingMethod(options[0].id)
-  }
+  // Defaults to Standard Shipping for any profile that isn't already
+  // covered — see initShippingIfNeeded's comment. A customer who already
+  // ticked Local Pickup keeps that choice through this call.
+  await initShippingIfNeeded()
 }
 
 export async function createPaymentSession(): Promise<{ clientSecret: string }> {

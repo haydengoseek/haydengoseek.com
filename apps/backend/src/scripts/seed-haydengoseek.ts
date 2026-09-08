@@ -285,12 +285,6 @@ export default async function seedHaydengoseek({ container }: { container: Medus
     [Modules.FULFILLMENT]: { fulfillment_provider_id: "manual_manual" },
   })
 
-  const {
-    result: [shippingProfile],
-  } = await createShippingProfilesWorkflow(container).run({
-    input: { data: [{ name: "Framed Artwork", type: "default" }] },
-  })
-
   const fulfillmentSet = await fulfillmentModuleService.createFulfillmentSets({
     name: "Australia delivery",
     type: "shipping",
@@ -300,32 +294,64 @@ export default async function seedHaydengoseek({ container }: { container: Medus
     [Modules.STOCK_LOCATION]: { stock_location_id: stockLocation.id },
     [Modules.FULFILLMENT]: { fulfillment_set_id: fulfillmentSet.id },
   })
-
-  // Placeholder flat rate — replace with Hayden's actual domestic/international
-  // freight rates (see plan doc "Payments, Tax, Shipping").
-  await createShippingOptionsWorkflow(container).run({
-    input: [
-      {
-        name: "Standard Shipping",
-        price_type: "flat",
-        provider_id: "manual_manual",
-        service_zone_id: fulfillmentSet.service_zones[0].id,
-        shipping_profile_id: shippingProfile.id,
-        type: { label: "Standard", description: "Placeholder rate — confirm with Hayden.", code: "standard" },
-        prices: [
-          { currency_code: "aud", amount: 25 },
-          { region_id: region.id, amount: 25 },
-        ],
-        rules: [
-          { attribute: "enabled_in_store", value: "true", operator: "eq" },
-          { attribute: "is_return", value: "false", operator: "eq" },
-        ],
-      },
-    ],
-  })
   await linkSalesChannelsToStockLocationWorkflow(container).run({
     input: { id: stockLocation.id, add: [salesChannel.id] },
   })
+
+  // Each product gets its own shipping profile (rather than one shared
+  // profile/rate for everything) so Hayden can set a custom shipping price
+  // per artwork from the admin later — a shared profile can only ever carry
+  // one flat rate for every product on it. Every profile carries the same
+  // two options: a paid "Standard Shipping" (placeholder rate — replace with
+  // Hayden's actual freight rates, see plan doc "Payments, Tax, Shipping")
+  // and a free "Local Pickup", so checkout can offer pickup as a toggle that
+  // zeroes the shipping line regardless of which product(s) are in the cart.
+  logger.info("Seeding per-product shipping profiles (placeholder rates)...")
+  const shippingProfileIdBySlug = new Map<string, string>()
+  for (const product of catalog.products) {
+    const {
+      result: [profile],
+    } = await createShippingProfilesWorkflow(container).run({
+      input: { data: [{ name: `${product.name} Shipping`, type: "default" }] },
+    })
+    await createShippingOptionsWorkflow(container).run({
+      input: [
+        {
+          name: "Standard Shipping",
+          price_type: "flat",
+          provider_id: "manual_manual",
+          service_zone_id: fulfillmentSet.service_zones[0].id,
+          shipping_profile_id: profile.id,
+          type: { label: "Standard", description: "Placeholder rate — confirm with Hayden.", code: "standard" },
+          prices: [
+            { currency_code: "aud", amount: 25 },
+            { region_id: region.id, amount: 25 },
+          ],
+          rules: [
+            { attribute: "enabled_in_store", value: "true", operator: "eq" },
+            { attribute: "is_return", value: "false", operator: "eq" },
+          ],
+        },
+        {
+          name: "Local Pickup",
+          price_type: "flat",
+          provider_id: "manual_manual",
+          service_zone_id: fulfillmentSet.service_zones[0].id,
+          shipping_profile_id: profile.id,
+          type: { label: "Pickup", description: "Collect from the Gold Coast studio.", code: "pickup" },
+          prices: [
+            { currency_code: "aud", amount: 0 },
+            { region_id: region.id, amount: 0 },
+          ],
+          rules: [
+            { attribute: "enabled_in_store", value: "true", operator: "eq" },
+            { attribute: "is_return", value: "false", operator: "eq" },
+          ],
+        },
+      ],
+    })
+    shippingProfileIdBySlug.set(product.slug, profile.id)
+  }
 
   logger.info("Seeding categories...")
   const categoryNames = ["Art", "Music", "Vintage Wares"]
@@ -380,7 +406,7 @@ export default async function seedHaydengoseek({ container }: { container: Medus
         handle: product.slug,
         description: stripHtml(product.descriptionHtml) || product.shortDescription,
         status: ProductStatus.DRAFT, // flip to PUBLISHED once pricing is confirmed real
-        shipping_profile_id: shippingProfile.id,
+        shipping_profile_id: shippingProfileIdBySlug.get(product.slug)!,
         category_ids: product.categories.map((id) => categoryIdByWooId.get(id)).filter((x): x is string => !!x),
         images: imagesByHandle.get(product.slug) ?? [],
         // The shop grid should consistently show the Original artwork shot

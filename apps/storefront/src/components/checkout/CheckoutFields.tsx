@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js"
-import { setCheckoutDetails } from "@/lib/cart-actions"
+import { setCheckoutDetails, setShippingChoice, type ShippingChoice } from "@/lib/cart-actions"
 
 const FIELDS = [
   { name: "email", label: "Email", type: "email", autoComplete: "email", span: 2 },
@@ -15,11 +16,23 @@ const FIELDS = [
   { name: "phone", label: "Phone", type: "tel", autoComplete: "tel", span: 1 },
 ] as const
 
-export default function CheckoutFields() {
+export default function CheckoutFields({ shippingChoice }: { shippingChoice: ShippingChoice }) {
+  const router = useRouter()
   const stripe = useStripe()
   const elements = useElements()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isTogglingShipping, startShippingTransition] = useTransition()
+
+  function togglePickup(checked: boolean) {
+    startShippingTransition(async () => {
+      await setShippingChoice(checked)
+      // Re-runs checkout/page.tsx server-side, which recomputes the cart
+      // total and creates a fresh Stripe payment session for it — the same
+      // mechanism CartLineItem's quantity change already relies on.
+      router.refresh()
+    })
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -91,7 +104,26 @@ export default function CheckoutFields() {
       </div>
 
       <div className="mt-8 border-t border-line pt-8 lg:mt-0 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
-        <PaymentElement />
+        <div>
+          <span className="block text-xs font-medium uppercase tracking-[0.08em] text-muted">Shipping method</span>
+          <label className="mt-4 flex cursor-pointer items-start gap-3 text-sm">
+            <input
+              type="checkbox"
+              checked={shippingChoice.isPickupSelected}
+              disabled={isTogglingShipping}
+              onChange={(e) => togglePickup(e.target.checked)}
+              className="mt-0.5 h-4 w-4 border-line accent-ink disabled:opacity-50"
+            />
+            <span>
+              Local pickup — collect from the Gold Coast studio
+              <span className="block text-xs text-muted">Free, instead of Standard Shipping</span>
+            </span>
+          </label>
+        </div>
+
+        <div className="mt-8">
+          <PaymentElement />
+        </div>
 
         {error && <p className="mt-6 text-sm text-danger">{error}</p>}
 

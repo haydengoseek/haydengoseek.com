@@ -29,9 +29,11 @@ Stripe (payments).
    to live keys is a deliberate later step once Hayden's ready to actually
    take payment — the live keys already exist (shared in an earlier
    session) but were never wired in on purpose.
-2. Shipping rates are still the $25 flat AU placeholder, and only
-   Australia is a configured region/shipping zone — see "Cart & checkout"
-   for the international-shipping gap this surfaced.
+2. Shipping rates are still the $25 flat AU placeholder on every product
+   (now individually editable per artwork — see "Shipping: Local Pickup +
+   per-product pricing" — but nobody's gone through and set real ones yet),
+   and only Australia is a configured region/shipping zone — see "Cart &
+   checkout" for the international-shipping gap this surfaced.
 3. Custom email for the domain — deliberately left on Hostinger for now
    (Hayden's decision, 2026-09-07); MX/SPF/DKIM/DMARC all preserved
    untouched through the DNS cutover. Zoho Mail's free tier was the
@@ -196,8 +198,9 @@ docker-compose.yml       Local Postgres + Redis for the Medusa backend.
   handles) and then published with `publish-all.ts` — all 14 are live now.
   Re-run `fetch-variation-prices.mjs` if Hayden changes prices on the old
   WordPress site before it's decommissioned.
-- **Shipping rates are a placeholder** ($25 flat) — need Hayden's actual
-  domestic/international rates.
+- **Shipping rates are a placeholder** ($25 flat on every product) — need
+  Hayden's actual domestic/international rates, now settable per artwork
+  (see "Shipping: Local Pickup + per-product pricing").
 - **Stripe is in test mode** (confirmed 2026-09-08 — fully wired, not
   skipped) — real (live) keys need to go in before actually taking payment
   from customers. See "Stripe" under Deployment for account details.
@@ -528,8 +531,9 @@ details, Stripe payment session, order completion).
 - **Checkout collapsed from two steps to one.** It used to be: submit
   address → Payment Element reveals → submit again. Now the `/checkout`
   page itself creates the Stripe payment session server-side as soon as
-  it loads (auto-attaching the one shipping option first, so the real
-  total is already known) and shows the address fields and Payment
+  it loads (auto-attaching Standard Shipping by default — see "Shipping:
+  Local Pickup + per-product pricing" below — so the real total is already
+  known) and shows the address fields and Payment
   Element together from the start — one "Place order" submit does both
   `setCheckoutDetails` and `stripe.confirmPayment`. Tradeoff worth
   knowing: this creates a Stripe PaymentIntent on every `/checkout` page
@@ -618,6 +622,49 @@ directly via Stripe's API with a test payment method (`pm_card_visa`) and
 loading `/checkout/confirmed` with the resulting query params — exercising
 the exact same code path a real redirect-back would. This is how bugs #2
 and #3 above were actually caught.
+
+## Shipping: Local Pickup + per-product pricing
+
+Built 2026-09-09, per Mark's request. Two changes:
+
+1. **"Local Pickup" option** — customers can tick a box at checkout to
+   collect from the Gold Coast studio instead of paying for shipping.
+2. **Per-product shipping prices** — previously all 14 products shared one
+   `ShippingProfile` ("Framed Artwork"), so every product was stuck on the
+   same flat $25 rate. Each product now has its own dedicated shipping
+   profile, so Hayden can set a custom shipping price on any individual
+   artwork from the admin (Settings → Locations → Shipping → find that
+   product's profile → edit its "Standard Shipping" option's price) without
+   touching code.
+
+**How it works**: every product's shipping profile carries the same two
+named shipping options on the shared "Australia" service zone — "Standard
+Shipping" (currently $25, editable per product) and "Local Pickup" (always
+$0). `apps/backend/src/scripts/migrate-per-product-shipping.ts` is the
+one-off migration that split the original shared profile into 14
+individual ones (idempotent — safe to re-run, skips already-migrated
+products); `seed-haydengoseek.ts` was also updated to create per-product
+profiles from scratch for any future fresh seed.
+
+**Why this needed more than a checkbox**: Medusa requires a cart to have a
+shipping method for *every distinct shipping profile* represented among its
+line items before it'll let you complete an order (`validateShippingStep`).
+Once shipping profiles are per-product, a cart with two different artworks
+in it spans two profiles — so the storefront can't just track one "shipping
+option id", it has to track a method per profile. `cart-actions.ts`'s
+`getShippingChoice`/`setShippingChoice`/`initShippingIfNeeded` handle this:
+the checkout page still shows a single Standard/Pickup toggle (not one
+picker per profile — overkill for a niche art store), but flipping it calls
+`addShippingMethod` once for every distinct profile currently in the cart,
+so multi-item carts are billed (or comped) correctly across all of them.
+Verified locally with both a single-product cart ($25 → free on toggle) and
+a two-different-products cart ($50 → free on toggle, i.e. both profiles'
+options swapped together).
+
+**Scope decision**: the checkout address form stays visible either way
+(Mark's call) rather than hiding it for pickup orders — one less
+conditional-UI path, and Hayden still gets the customer's name/contact
+details for arranging pickup.
 
 ## Order emails
 
