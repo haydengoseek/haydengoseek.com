@@ -1,6 +1,7 @@
+import Image from "next/image"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
-import { getPageBySlug } from "@/lib/sanity"
+import { getPageBySlug, urlForImage } from "@/lib/sanity"
 import { ScrollReveal } from "@/lib/motion-variants"
 import RichText from "@/components/RichText"
 
@@ -24,6 +25,19 @@ export default async function GenericPage({ params }: { params: Promise<{ slug: 
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-24 sm:px-8 md:py-32">
+      {page.heroImage && (
+        <ScrollReveal>
+          <div className="relative mb-10 aspect-[16/9] overflow-hidden bg-surface">
+            <Image
+              src={urlForImage(page.heroImage).width(1200).url()}
+              alt={page.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-cover"
+            />
+          </div>
+        </ScrollReveal>
+      )}
       <ScrollReveal>
         <h1 className="font-serif text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.1] tracking-[-0.02em] text-ink">
           {page.title}

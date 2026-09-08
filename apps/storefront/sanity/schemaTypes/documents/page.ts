@@ -15,6 +15,13 @@ export default defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: 'heroImage',
+      title: 'Hero image',
+      description: 'Shown above the title, optional.',
+      type: 'image',
+      options: {hotspot: true},
+    }),
+    defineField({
       name: 'body',
       title: 'Body',
       type: 'array',

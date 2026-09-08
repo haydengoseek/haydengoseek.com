@@ -134,13 +134,14 @@ export async function getSiteSettings() {
 
 export type SanityGenericPage = {
   title: string
+  heroImage: SanityImageSource | null
   body: PortableTextBlock[] | null
 }
 
 export async function getPageBySlug(slug: string) {
   if (!sanityClient) return null
   return sanityClient.fetch<SanityGenericPage | null>(
-    `*[_type == "page" && slug.current == $slug][0]{ title, body }`,
+    `*[_type == "page" && slug.current == $slug][0]{ title, heroImage, body }`,
     { slug },
     { next: { revalidate: 60 } }
   )

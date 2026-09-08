@@ -80,4 +80,9 @@ export default defineType({
     }),
     defineField({name: 'seo', title: 'SEO', type: 'seo', group: 'seo'}),
   ],
+  preview: {
+    prepare() {
+      return {title: 'Home Page'}
+    },
+  },
 })
