@@ -21,14 +21,15 @@ Stripe (payments).
   site's real copy. See "Sanity CMS" below.
 
 **Still open before this is fully customer-ready:**
-1. **No `/cart` or `/checkout` page UI — this is the main remaining gap.**
-   Add-to-cart works end-to-end at the data layer and the Stripe/Medusa
-   payment flow is proven against the real API, but there's no page for a
-   customer to actually view their cart or complete an order on the live
-   site. **Next task, not yet started.**
-2. Real (live) Stripe keys — test mode is fully wired (see "Stripe" below);
-   flipping to live is a deliberate later step once checkout UI exists and
-   Hayden's ready to actually take payment.
+1. **Real (live) Stripe keys** — test mode is fully wired end-to-end,
+   including a working `/cart` → `/checkout` → order-confirmation flow
+   (built and verified 2026-09-08, see "Cart & checkout" below). Flipping
+   to live keys is a deliberate later step once Hayden's ready to actually
+   take payment — the live keys already exist (shared in an earlier
+   session) but were never wired in on purpose.
+2. Shipping rates are still the $25 flat AU placeholder, and only
+   Australia is a configured region/shipping zone — see "Cart & checkout"
+   for the international-shipping gap this surfaced.
 3. Custom email for the domain — deliberately left on Hostinger for now
    (Hayden's decision, 2026-09-07); MX/SPF/DKIM/DMARC all preserved
    untouched through the DNS cutover. Zoho Mail's free tier was the
@@ -198,10 +199,10 @@ docker-compose.yml       Local Postgres + Redis for the Medusa backend.
 - **Stripe is in test mode** (confirmed 2026-09-08 — fully wired, not
   skipped) — real (live) keys need to go in before actually taking payment
   from customers. See "Stripe" under Deployment for account details.
-- **Cart/checkout pages aren't built** — Add to Cart works end-to-end at the
-  data layer, but there's no `/cart` or `/checkout` page UI yet to view or
-  complete an order from the storefront itself (the Stripe/Medusa flow was
-  proven directly against the API, not through a UI).
+- ~~Cart/checkout pages aren't built~~ — **built and verified 2026-09-08**,
+  full click-through `/cart` → `/checkout` → order confirmation, real
+  Stripe Payment Element, real Medusa order created. See "Cart & checkout"
+  below.
 - **`/about`, `/contact`, `/shipping-returns`** are real, live, Sanity-backed
   pages now (2026-09-07) but seeded with brief starter copy — worth having
   Hayden expand them in Studio.
@@ -476,6 +477,68 @@ against Stripe's own API rather than assumed:
   actually go live. Worth having Hayden roll the live secret key in Stripe
   Dashboard → Developers → API keys at some point, as routine hygiene for
   a key that's touched a chat log, even though nothing was done with it.
+
+## Cart & checkout
+
+Built and verified 2026-09-08 — full guest checkout, no accounts/login
+(none existed before; out of scope). New files: `apps/storefront/src/app/
+(site)/cart/page.tsx`, `.../checkout/page.tsx`, `.../checkout/confirmed/
+page.tsx`, plus `components/cart/CartLineItem.tsx` and
+`components/checkout/{CheckoutForm,PaymentStep,OrderCompleter}.tsx`.
+`lib/cart-actions.ts` grew from just `addToCart`/`getCartItemCount` to the
+full set (`getCart`, line-item update/remove, shipping options, checkout
+details, Stripe payment session, order completion).
+
+**Scope decisions:**
+- **Australia only.** Only one region/shipping zone exists (see the seed
+  script); country is fixed to `au` rather than a form field. The site's
+  own FAQ claims international shipping — that's not actually backed by
+  the commerce config yet, worth flagging to Hayden separately since real
+  international rates would be needed first.
+- **Single-page checkout** — address form + order summary + Stripe Payment
+  Element all on one page (the one shipping option is auto-selected, no
+  picker needed), rather than a multi-step wizard with nothing real to
+  step through.
+- No order confirmation emails (no notification provider configured) and
+  no separate billing address (reused from shipping) — both reasonable
+  gaps for a small solo-artist store, not attempted here.
+
+**Three real bugs found and fixed during verification** (all three only
+surfaced by actually clicking through the flow in a browser, not by
+type-checking or reading the code):
+1. Increasing a cart line item's quantity past a one-of-one Original's
+   real stock crashed the whole page — Medusa correctly rejects it
+   server-side, but the server action let the error bubble up uncaught.
+   Fixed by having `updateLineItemQuantity` return `{success, error}`
+   instead of throwing, shown inline per line item.
+2. `/checkout/confirmed` crashed outright: Next.js only allows
+   `cookies().delete()` inside a genuine client-invoked Server Action, not
+   during a Server Component's render — and the page was directly
+   `await`-ing `completeOrder()` (which clears the cart cookie) during
+   render. Fixed by moving that call into a client component
+   (`OrderCompleter.tsx`) that triggers it from `useEffect` instead.
+3. After fixing #2, the confirmation page still hung on "Finalising your
+   order…" forever even though the order was created correctly server-side
+   every time (confirmed via the Store API directly). Cause: React Strict
+   Mode's dev-only synchronous mount → cleanup → remount cycle was setting
+   a `cancelled` flag (meant to guard against setState-after-unmount) to
+   `true` before the one real `completeOrder()` call's promise resolved,
+   silently discarding its result. A `useRef` guard already made the call
+   fire exactly once — the additional `cancelled` check was actively
+   harmful once that was in place, so it was removed rather than patched
+   further.
+
+**How it was actually verified**: the Browser tool's remote pane couldn't
+get real keystrokes into Stripe's cross-origin Payment Element iframe (a
+known friction point automating third-party payment iframes) — clicks
+landed inside the right iframe (confirmed via `getBoundingClientRect()`)
+but never visibly expanded card fields. Worked around it by letting the
+real UI create the actual Stripe PaymentIntent (proving `createPaymentSession`
+end-to-end with the correct order amount), then confirming that PaymentIntent
+directly via Stripe's API with a test payment method (`pm_card_visa`) and
+loading `/checkout/confirmed` with the resulting query params — exercising
+the exact same code path a real redirect-back would. This is how bugs #2
+and #3 above were actually caught.
 
 ## Data migration source
 

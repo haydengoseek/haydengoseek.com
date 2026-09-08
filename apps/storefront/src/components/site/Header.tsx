@@ -42,7 +42,9 @@ export default async function Header() {
         </nav>
 
         <div className="flex items-center gap-4 text-sm">
-          <span aria-label={`${itemCount} items in cart`}>Cart ({itemCount})</span>
+          <Link href="/cart" aria-label={`${itemCount} items in cart`} className="hover:text-muted">
+            Cart ({itemCount})
+          </Link>
         </div>
       </div>
     </header>
