@@ -19,6 +19,8 @@ Stripe (payments).
   2026-09-07 — header, footer, hero, FAQ, contact, and a new blog are all
   editable from Studio (`/studio` on the storefront), pre-seeded with the
   site's real copy. See "Sanity CMS" below.
+- **Order emails**: customer confirmation + admin new-order alert, both
+  sending correctly via Resend as of 2026-09-08. See "Order emails" below.
 
 **Still open before this is fully customer-ready:**
 1. **Real (live) Stripe keys** — test mode is fully wired end-to-end,
@@ -499,9 +501,10 @@ details, Stripe payment session, order completion).
   Element all on one page (the one shipping option is auto-selected, no
   picker needed), rather than a multi-step wizard with nothing real to
   step through.
-- No order confirmation emails (no notification provider configured) and
-  no separate billing address (reused from shipping) — both reasonable
-  gaps for a small solo-artist store, not attempted here.
+- No separate billing address (reused from shipping) — reasonable for a
+  small solo-artist store, not attempted here.
+- ~~No order confirmation emails~~ — **built 2026-09-08**, see "Order
+  emails" below.
 
 **Three real bugs found and fixed during verification** (all three only
 surfaced by actually clicking through the flow in a browser, not by
@@ -539,6 +542,55 @@ directly via Stripe's API with a test payment method (`pm_card_visa`) and
 loading `/checkout/confirmed` with the resulting query params — exercising
 the exact same code path a real redirect-back would. This is how bugs #2
 and #3 above were actually caught.
+
+## Order emails
+
+Built 2026-09-08 — customer order confirmation + admin new-order alert,
+via a custom Resend notification provider (nothing like this existed
+before: no notification module configured, `src/subscribers/` was just
+the stock README, and the `resend` npm package was installed on the
+storefront but never actually used anywhere).
+
+- **Provider**: `apps/backend/src/modules/resend/` — `service.ts`
+  (`ResendNotificationService extends AbstractNotificationProviderService`,
+  same base class and shape as the stock `@medusajs/notification-sendgrid`
+  provider, just using Resend's SDK and plain inline-HTML `content`
+  instead of a third-party template ID), `index.ts` (`ModuleProvider(Modules.NOTIFICATION, ...)`,
+  same export pattern as that same stock provider), `templates.ts` (two
+  small plain-HTML-string builders — no React Email or external template
+  system, matching how simple the rest of this codebase's presentation
+  layer is). Registered in `medusa-config.ts` alongside the existing
+  `payment`/`file` module blocks.
+- **Subscriber**: `apps/backend/src/subscribers/order-placed.ts`, on
+  `order.placed` — sends one customer confirmation (to the order's email)
+  and one admin alert each to `info@haydengoseek.com` and
+  `markperic@gmail.com` (comma-separated in `ADMIN_NOTIFICATION_EMAILS`).
+- **Sending domain**: `orders@haydengoseek.com`, verified in Resend
+  (2 domain entries briefly existed — one from the dashboard's
+  auto-Cloudflare-DNS integration, one created redundantly via the API in
+  parallel; the API-created duplicate was deleted, the dashboard one kept
+  and verified) via 3 DNS records on the `send.haydengoseek.com`
+  subdomain (SPF TXT + MX, DKIM TXT) — scoped to that subdomain, so no
+  conflict with Hostinger's existing root-domain mail records.
+- **Env vars** (`apps/backend/.env`, `.env.example`, and Railway
+  production): `RESEND_API_KEY`, `RESEND_FROM_EMAIL=orders@haydengoseek.com`,
+  `ADMIN_NOTIFICATION_EMAILS=info@haydengoseek.com,markperic@gmail.com`.
+- **Deploying backend code changes**: worth remembering — like the
+  storefront/Vercel, this Railway service has no GitHub auto-deploy
+  connected (`source: {repo: null}`), so `git push` alone does not deploy
+  new backend code. Setting a Railway variable *does* auto-trigger a
+  redeploy, but only rebuilds whatever was last uploaded — to actually
+  ship code changes, run `railway up --service <id> --environment <id>`
+  from `apps/backend` explicitly (confirmed by testing: the env-var-triggered
+  redeploy alone would have shipped the new env vars against stale code
+  with no notification module).
+- **Verified working end-to-end, both locally and in production** —
+  placed a real test order against each, confirmed via Resend's own
+  `/emails` log that all three notifications (customer + 2 admin) were
+  sent and marked `delivered` each time.
+- Out of scope, not attempted: wiring the same Resend setup into
+  `ContactSection.tsx`'s still-unbuilt contact form (separate, unrelated
+  piece of work).
 
 ## Data migration source
 
