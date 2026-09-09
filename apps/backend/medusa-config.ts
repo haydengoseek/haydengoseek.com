@@ -34,6 +34,10 @@ module.exports = defineConfig({
             options: {
               apiKey: process.env.STRIPE_API_KEY,
               webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+              // Charge the customer's card immediately on payment instead of
+              // just authorizing it — simpler for a small store than having
+              // someone manually capture every order in Stripe/Medusa admin.
+              capture: true,
             },
           },
         ],
