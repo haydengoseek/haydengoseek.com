@@ -550,6 +550,48 @@ confusing across a rebrand).
   if development on this project resumes later — it uses entirely separate
   keys/webhooks from live mode, so nothing here needs to change for that.
 
+**Post-cutover bug, found and fixed same day**: a real customer (Mark,
+testing) couldn't remove an item from their cart — `DELETE
+/store/carts/:id/line-items/:id` 500'd. Root cause: that cart already had
+a *pending* payment session from **before** the key swap, with a
+test-mode PaymentIntent behind it. Medusa's payment module always tries to
+cancel a session's underlying PaymentIntent via the provider before
+deleting the session row (`deletePaymentSession` in
+`@medusajs/payment/dist/services/payment-module.js`) — and Stripe now
+rejects that cancel ("a live mode key was used" against a test-mode
+intent), so the delete silently never completes and the whole workflow
+throws `Could not delete all payment sessions`. This blocks *any* mutation
+of an affected cart, including just reloading `/checkout` (which eagerly
+creates a payment session on every load).
+
+Fixed with `apps/backend/src/scripts/fix-stale-payment-sessions.ts` — checks
+every pending Stripe session against the live API and deletes only the ones
+that don't actually exist under the current key (a fresh session gets
+created automatically next time that cart's checkout page loads). Dry-run
+by default. Found 3 affected sessions in production, deleted them, confirmed
+the originally-broken cart could remove items again immediately after.
+
+**While investigating, checked for the same failure shape elsewhere**: the
+per-product shipping migration (see below) similarly changed the "world"
+out from under any cart that already had a shipping method attached before
+it ran — `apps/backend/src/scripts/fix-orphaned-shipping-methods.ts` checks
+for that (a cart's shipping method pointing at a shipping profile none of
+its current items actually use, which would double-count shipping since
+`initShippingIfNeeded` only ever adds a missing method, never removes a
+stale one). Ran clean in production — 0 found — but worth keeping the
+script around since the failure shape is real, just didn't happen to bite
+anyone this time.
+
+**Gotcha worth remembering for any future one-off script with a flag**:
+`medusa exec`'s argument parser (yargs, strict mode) silently drops any
+argument starting with `--`, even after a literal `--` separator — so
+`npx medusa exec foo.ts --apply` and `npx medusa exec foo.ts -- --apply`
+both silently no-op instead of erroring loudly (the first rejects with
+"Unknown argument", the second just drops it, args ends up empty). Both
+scripts above take a plain positional `apply` instead (`npx medusa exec
+foo.ts apply`) — confirmed working by testing all three forms locally
+before touching production.
+
 ## Cart & checkout
 
 Built and verified 2026-09-08, streamlined further the same day — full
