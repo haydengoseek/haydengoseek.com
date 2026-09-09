@@ -4,7 +4,14 @@ Rebuild of haydengoseek.com (currently WordPress/WooCommerce) on Next.js +
 Tailwind (storefront) / Sanity (editorial content) / Medusa (commerce) /
 Stripe (payments).
 
-## 🚀 Live — custom domain, CMS, blog all live
+## 🚀 Status: live, taking real orders (as of 2026-09-09)
+
+**If you're returning after a break, start here.** Short version: the
+site works end-to-end and real money moves through it now — nothing below
+is broken, it's what's still a placeholder or unbuilt. Read the bullets
+below for what's live, "Still open" right after for what's next, and
+"Picking this up on a different machine" further down before touching
+anything if you're not on this exact laptop.
 
 - **Site**: [haydengoseek.com](https://haydengoseek.com) — live since
   2026-09-07 (DNS cut over to Cloudflare → Vercel; see "Custom domain & DNS"
@@ -48,6 +55,14 @@ Stripe (payments).
    probably reusing the existing Frame/Type variant options), the new
    provider itself, and Mark to pin down the exact rule wording (combined
    vs. per-extra-item discount math) before coding.
+4. **The homepage "Say g'day" contact form has no submit handler** —
+   presentational only (`ContactSection.tsx`), by design until this was
+   built (see its own comment: "the host page owns action/method/onSubmit
+   once that's built"). A visitor filling it in today gets no error, but
+   nothing happens and nobody hears about it. Order emails already proved
+   the Resend plumbing works (see "Order emails") — wiring this up would
+   reuse the same provider, just a new subscriber/action instead of
+   `order.placed`.
 
 ## Picking this up on a different machine
 
@@ -211,9 +226,8 @@ docker-compose.yml       Local Postgres + Redis for the Medusa backend.
 - **Shipping rates are a placeholder** ($25 flat on every product) — need
   Hayden's actual domestic/international rates, now settable per artwork
   (see "Shipping: Local Pickup + per-product pricing").
-- **Stripe is in test mode** (confirmed 2026-09-08 — fully wired, not
-  skipped) — real (live) keys need to go in before actually taking payment
-  from customers. See "Stripe" under Deployment for account details.
+- ~~Stripe is in test mode~~ — **live since 2026-09-09**, real cards charge
+  for real now. See "Stripe" below for the full cutover.
 - ~~Cart/checkout pages aren't built~~ — **built and verified 2026-09-08**,
   full click-through `/cart` → `/checkout` → order confirmation, real
   Stripe Payment Element, real Medusa order created. See "Cart & checkout"
@@ -327,15 +341,17 @@ Both backend and storefront are live, as of 2026-09-05.
     `https://backend-production-eae1.up.railway.app/app`. Admin login was
     fixed 2026-09-07 (see "Medusa admin access" below) — the original
     invite approach never worked out.
-  - Real (live) Stripe keys still need to replace the test-mode
-    `STRIPE_API_KEY` before actually taking payment — see "Stripe" below.
+  - ~~Real (live) Stripe keys still need to replace the test-mode
+    `STRIPE_API_KEY`~~ — **done 2026-09-09**, see "Stripe" below.
 - **Storefront → Vercel.** Project "storefront" under the `haydengoseek`
   Vercel team, live at `https://storefront-three-ochre.vercel.app`. Env
   vars set: `NEXT_PUBLIC_MEDUSA_BACKEND_URL` (the Railway URL above),
   `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY` (from the production seed run —
   regenerate and update here if the production store ever gets reseeded),
-  `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (test mode, same as local),
-  `NEXT_PUBLIC_SANITY_DATASET`. `apps/storefront/vercel.json` pins
+  `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (live since 2026-09-09 — local dev
+  still uses a test-mode key in `apps/backend/.env`/`apps/storefront/.env`,
+  only production is live), `NEXT_PUBLIC_SANITY_DATASET`.
+  `apps/storefront/vercel.json` pins
   `framework: nextjs` — without it Vercel failed to auto-detect Next.js in
   this monorepo subdirectory and looked for a `dist` output folder instead
   of `.next`.
