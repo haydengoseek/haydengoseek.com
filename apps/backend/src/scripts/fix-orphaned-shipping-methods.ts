@@ -21,9 +21,9 @@
  * since `initShippingIfNeeded` will just attach the correct one again next
  * time that cart's checkout page loads.
  *
- * Dry run by default. Add --apply to actually delete:
+ * Dry run by default. Add "apply" as an argument to actually delete:
  *   npx medusa exec ./src/scripts/fix-orphaned-shipping-methods.ts
- *   npx medusa exec ./src/scripts/fix-orphaned-shipping-methods.ts --apply
+ *   npx medusa exec ./src/scripts/fix-orphaned-shipping-methods.ts apply
  */
 import { MedusaContainer } from "@medusajs/framework"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
@@ -37,7 +37,7 @@ export default async function fixOrphanedShippingMethods({
   args: string[]
 }) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-  const apply = args.includes("--apply")
+  const apply = args.includes("apply")
 
   const db = new Client({ connectionString: process.env.DATABASE_URL })
   await db.connect()
@@ -88,7 +88,7 @@ export default async function fixOrphanedShippingMethods({
     }
 
     logger.info(
-      `Done. ${orphaned} orphaned method(s) ${apply ? "deleted" : "found — re-run with --apply to actually delete them"}.`
+      `Done. ${orphaned} orphaned method(s) ${apply ? "deleted" : 'found — re-run with "apply" as an argument to actually delete them'}.`
     )
   } finally {
     await db.end()

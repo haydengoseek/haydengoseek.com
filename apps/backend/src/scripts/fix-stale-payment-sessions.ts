@@ -18,10 +18,10 @@
  * A fresh payment session gets created automatically next time that cart's
  * checkout page loads.
  *
- * Dry run by default (just reports what it would delete). Add --apply to
+ * Dry run by default (just reports what it would delete). Add "apply" as an argument to
  * actually delete:
  *   npx medusa exec ./src/scripts/fix-stale-payment-sessions.ts
- *   npx medusa exec ./src/scripts/fix-stale-payment-sessions.ts --apply
+ *   npx medusa exec ./src/scripts/fix-stale-payment-sessions.ts apply
  */
 import { MedusaContainer } from "@medusajs/framework"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
@@ -35,7 +35,7 @@ export default async function fixStalePaymentSessions({
   args: string[]
 }) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-  const apply = args.includes("--apply")
+  const apply = args.includes("apply")
   const apiKey = process.env.STRIPE_API_KEY
   if (!apiKey) throw new Error("STRIPE_API_KEY is not set")
 
@@ -82,7 +82,7 @@ export default async function fixStalePaymentSessions({
     }
 
     logger.info(
-      `Done. ${stale} stale session(s) ${apply ? "deleted" : "found — re-run with --apply to actually delete them"}.`
+      `Done. ${stale} stale session(s) ${apply ? "deleted" : 'found — re-run with "apply" as an argument to actually delete them'}.`
     )
   } finally {
     await db.end()
