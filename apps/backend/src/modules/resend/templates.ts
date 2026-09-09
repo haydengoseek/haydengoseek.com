@@ -81,6 +81,28 @@ export function orderPlacedCustomerEmail(order: OrderEmailData) {
   }
 }
 
+export function resetPasswordEmail(resetUrl: string) {
+  return {
+    subject: `Reset your password — HaydenGoSeek`,
+    html: wrapper(
+      "Reset your password",
+      `
+        <p style="font-size:14px;color:#6b6459;">
+          Click the button below to choose a new password. This link expires in 15 minutes.
+        </p>
+        <p style="margin:24px 0;">
+          <a href="${resetUrl}" style="display:inline-block;background:#17140f;color:#ffffff;padding:12px 20px;text-decoration:none;font-size:14px;">
+            Reset password
+          </a>
+        </p>
+        <p style="font-size:12px;color:#6b6459;">
+          If you didn't request this, you can safely ignore this email.
+        </p>
+      `
+    ),
+  }
+}
+
 export function orderPlacedAdminEmail(order: OrderEmailData) {
   const orderRef = order.displayId ? `#${order.displayId}` : ""
 

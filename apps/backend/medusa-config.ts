@@ -3,6 +3,18 @@ import { loadEnv, defineConfig } from '@medusajs/framework/utils'
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 module.exports = defineConfig({
+  admin: {
+    // Left unset, this defaults to MEDUSA_BACKEND_URL and gets baked into
+    // the built admin bundle at build time. When the admin is reached via a
+    // custom domain (e.g. admin.example.com) that's a different host than
+    // MEDUSA_BACKEND_URL's raw Railway/Render URL, so the dashboard's API
+    // calls become cross-site — the session cookie (SameSite=Lax in
+    // production) then never gets sent back, causing an infinite redirect
+    // to /login right after a successful login. Forcing "" makes the
+    // bundle call whatever origin it's served from, which is correct since
+    // the admin is always co-hosted with the API.
+    backendUrl: "",
+  },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL,
