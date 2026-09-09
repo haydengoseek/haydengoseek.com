@@ -21,24 +21,21 @@ Stripe (payments).
   site's real copy. See "Sanity CMS" below.
 - **Order emails**: customer confirmation + admin new-order alert, both
   sending correctly via Resend as of 2026-09-08. See "Order emails" below.
+- **Payments are live**: Stripe switched from test to live mode
+  2026-09-09 — real cards are now actually charged (automatic capture) on
+  checkout. See "Stripe" below for the full cutover checklist.
 
 **Still open before this is fully customer-ready:**
-1. **Real (live) Stripe keys** — test mode is fully wired end-to-end,
-   including a working `/cart` → `/checkout` → order-confirmation flow
-   (built and verified 2026-09-08, see "Cart & checkout" below). Flipping
-   to live keys is a deliberate later step once Hayden's ready to actually
-   take payment — the live keys already exist (shared in an earlier
-   session) but were never wired in on purpose.
-2. Shipping rates are still the $25 flat AU placeholder on every product
+1. Shipping rates are still the $25 flat AU placeholder on every product
    (now individually editable per artwork — see "Shipping: Local Pickup +
    per-product pricing" — but nobody's gone through and set real ones yet),
    and only Australia is a configured region/shipping zone — see "Cart &
    checkout" for the international-shipping gap this surfaced.
-3. Custom email for the domain — deliberately left on Hostinger for now
+2. Custom email for the domain — deliberately left on Hostinger for now
    (Hayden's decision, 2026-09-07); MX/SPF/DKIM/DMARC all preserved
    untouched through the DNS cutover. Zoho Mail's free tier was the
    recommended path if this ever needs to move off Hostinger.
-4. **Composite shipping pricing** (discussed 2026-09-09, not yet built):
+3. **Composite shipping pricing** (discussed 2026-09-09, not yet built):
    right now shipping is always a straight sum of each cart item's own
    per-product rate. Mark wants rules like "2+ canvas framed prints ships
    for less than A+B" and "extra paper prints ship free." The mechanism
@@ -492,33 +489,50 @@ with this developer's other client projects), dataset `production`.
 
 ## Stripe
 
-**Confirmed 2026-09-08: test mode was never skipped.** There was a moment
-of doubt about this (the account is named "Real Choice Framing," Hayden's
-framing business — separate from the "HaydenGoSeek" art-selling brand, but
-the same Stripe account handles both), so this was verified directly
-against Stripe's own API rather than assumed:
+**Live since 2026-09-09.** Account: `acct_1Su5WrBbNd3JJ1Ni`, AU, AUD,
+charges/payouts both enabled, dashboard display name "Real Choice Framing"
+(Hayden's framing business — separate from the "HaydenGoSeek" art-selling
+brand, but the same Stripe account handles both — confirmed via `GET
+/v1/account` before touching anything, since account names can be
+confusing across a rebrand).
 
-- Account: `acct_1Su5WrBbNd3JJ1Ni`, AU, AUD, charges/payouts both enabled.
-- The `STRIPE_API_KEY` already set locally and on the Railway backend is a
-  genuine `sk_test_...` key (confirmed via `GET /v1/account`) — Hayden's
-  real account, correctly in test mode, not a placeholder.
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` on Vercel matches the same account's
-  `pk_test_...` key.
-- **`STRIPE_WEBHOOK_SECRET` is now set on Railway** (2026-09-08) — created
-  via Stripe's new **Workbench** (`dashboard.stripe.com/workbench/webhooks`
-  — replaced the old Developers → Webhooks page; Settings → Developers now
-  just shows a toggle confirming Workbench is on, it's not the tool itself)
-  pointed at `/hooks/payment/stripe` for the same event list documented
-  above. Backend redeployed clean afterward (`railway variable set`
-  triggers an automatic redeploy unless `--skip-deploys` is passed).
-- Stripe also moved **Test mode → Sandboxes**: click the business name
-  top-left → "Switch to sandbox" → Test mode, rather than a simple toggle.
-- **Live keys exist and were shared in this session's chat** (Hayden's
-  `pk_live_`/`sk_live_` pair) but deliberately **not** wired in anywhere —
-  staying in test mode until checkout UI exists and Hayden's ready to
-  actually go live. Worth having Hayden roll the live secret key in Stripe
-  Dashboard → Developers → API keys at some point, as routine hygiene for
-  a key that's touched a chat log, even though nothing was done with it.
+**Going-live checklist actually done:**
+- Hayden rotated the live secret key in Stripe Dashboard (Developers → API
+  keys → Rotate key) rather than reusing whatever existed before — clean
+  key, never previously exposed anywhere.
+- `STRIPE_API_KEY` (Railway) and `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+  (Vercel) both updated to the live pair, verified via `GET /v1/account`
+  against the new secret key before wiring it in.
+- **Switched to automatic capture** (`capture: true` added to the Stripe
+  provider's options in `medusa-config.ts`) — previously defaulted to
+  manual capture (`requires_capture`, needing someone to manually capture
+  every payment in Stripe/Medusa admin), which made sense for test-mode
+  development but not for a live store taking real orders.
+- New live-mode webhook created via Stripe's API pointed at
+  `/hooks/payment/stripe`, subscribed to the exact event list
+  `@medusajs/payment-stripe` handles (`payment_intent.created`,
+  `.processing`, `.canceled`, `.payment_failed`, `.requires_action`,
+  `.amount_capturable_updated`, `.partially_funded`, `.succeeded`) — its
+  secret went into Railway's `STRIPE_WEBHOOK_SECRET`.
+  - **Found and removed a duplicate**: an unlabeled live webhook already
+    existed pointed at the same URL (created earlier, before this cutover
+    — not, as first suspected, a leftover from the old WooCommerce Stripe
+    plugin) with nearly the same event list. Left running alongside the
+    new one, every payment event would have double-fired at the backend.
+    Deleted it (via the dashboard — deleting live Stripe resources isn't
+    something to do unattended through the API) and kept the one whose
+    secret was actually captured and wired in.
+- **Verified end-to-end without spending real money**: loaded
+  `/checkout` live, confirmed via Stripe's API that the resulting
+  PaymentIntent had `livemode: true`, the correct cart total, and
+  `capture_method: automatic`; confirmed the webhook delivered cleanly
+  (`pending_webhooks: 0` on the resulting Stripe event, `200` in Railway's
+  logs) — then cancelled that PaymentIntent since it was never paid, to
+  keep it out of Hayden's dashboard.
+- Test mode is still fully available by switching to a Stripe Sandbox
+  (`dashboard.stripe.com` → business name top-left → "Switch to sandbox")
+  if development on this project resumes later — it uses entirely separate
+  keys/webhooks from live mode, so nothing here needs to change for that.
 
 ## Cart & checkout
 
