@@ -19,7 +19,12 @@ const FRAME_SWATCH_COLORS: Record<string, string> = {
   Black: "#1a1a1a",
 }
 
-function firstPurchasableVariant(variants: ProductDetail["variants"]) {
+// The one-of-one Original is the piece worth leading with — default to it
+// (when it exists and hasn't sold out) rather than an arbitrary Print/Frame
+// combination.
+function defaultVariant(variants: ProductDetail["variants"]) {
+  const original = variants.find((v) => v.options["Type"] === "Original" && isVariantPurchasable(v))
+  if (original) return original
   return variants.find((v) => isVariantPurchasable(v)) ?? variants[0]
 }
 
@@ -27,7 +32,7 @@ export default function ProductInteractive({ product }: { product: ProductDetail
   const router = useRouter()
   const { open: openCartDrawer } = useCartDrawer()
   const [selected, setSelected] = useState<VariantOptionValues>(
-    () => firstPurchasableVariant(product.variants)?.options ?? {}
+    () => defaultVariant(product.variants)?.options ?? {}
   )
   const [isPending, startTransition] = useTransition()
   const [added, setAdded] = useState(false)
